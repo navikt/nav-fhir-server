@@ -17,6 +17,34 @@ spring:
       allow-numeric-leading-zeros: true
     deserialization:
       fail-on-unknown-properties: false
+  security:
+    oauth2:
+      authorizationserver:
+        client:
+          fhir-demo-client:
+            registration:
+              client-id: "NAV_SMART_on_FHIR_example"
+              client-secret: "{noop}secret"
+              client-authentication-methods:
+                - "client_secret_basic"
+              authorization-grant-types:
+                - "authorization_code"
+                - "client_credentials"
+                - "refrehs_token"
+              redirect-uris:
+                - "http://127.0.0.0_5173/"
+              post-logout-redirect-uris:
+                - "http://127.0.0.0_5173/"
+              scopes:
+                - "openid"
+                - "profile"
+                - "fhirUser"
+                - "launch"
+                - "patient/*.rs"
+                - "user/*.rs"
+                - "offline_access"
+            require-authorization-consent: true
+        issuer: "http://auth-server:9000"
 
 management:
   endpoints:
