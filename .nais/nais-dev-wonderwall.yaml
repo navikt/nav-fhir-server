@@ -1,0 +1,61 @@
+apiVersion: 'nais.io/v1alpha1'
+kind: 'Application'
+metadata:
+  name: nav-fhir-server-wonderwall
+  namespace: helseopplysninger
+  labels:
+    team: helseopplysninger
+spec:
+  image: ghcr.io/nais/wonderwall:latest
+  redis:
+    - instance: fhir
+      access: readwrite
+  envFrom:
+    - secret: fhir-helseid-secret
+  ingresses:
+    - 'https://fhir.ekstern.dev.nav.no'
+  accessPolicy:
+    outbound:
+      rules:
+        - application: nav-fhir-server
+      external:
+        - host: helseid-sts.test.nhn.no
+  liveness:
+    path: /oauth2/ping
+    initialDelay: 5
+  readiness:
+    path: /oauth2/ping
+    initialDelay: 5
+  prometheus:
+    enabled: false
+  replicas:
+    min: 1
+    max: 2
+    cpuThresholdPercentage: 90
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  env:
+    - name: WONDERWALL_OPENID_CLIENT_ID
+      value: '5f6e67ff-8209-4f3d-9f9d-839c357355f0'
+    - name: WONDERWALL_OPENID_SCOPES
+      value: profile,offline_access,helseid://scopes/identity/assurance_level,helseid://scopes/identity/pid,helseid://scopes/identity/security_level,helseid://scopes/hpr/hpr_number,helseid://scopes/identity/assurance_level,helseid://scopes/identity/network
+    - name: WONDERWALL_UPSTREAM_HOST
+      value: nav-fhir-server
+    - name: WONDERWALL_INGRESS
+      value: https://www.fhir.dev.nav.no
+    - name: WONDERWALL_OPENID_WELL_KNOWN_URL
+      value: https://helseid-sts.test.nhn.no/.well-known/openid-configuration
+    - name: WONDERWALL_REDIS_URI
+      value: $(REDIS_URI_FHIR)
+    - name: WONDERWALL_REDIS_USERNAME
+      value: $(REDIS_USERNAME_FHIR)
+    - name: WONDERWALL_REDIS_PASSWORD
+      value: $(REDIS_PASSWORD_FHIR)
+    - name: WONDERWALL_BIND_ADDRESS
+      value: $(BIND_ADDRESS)
+    - name: WONDERWALL_AUTO_LOGIN
+      value: 'true'
