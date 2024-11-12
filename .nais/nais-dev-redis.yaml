@@ -1,0 +1,10 @@
+apiVersion: aiven.io/v1alpha1
+kind: Redis
+metadata:
+  labels:
+    team: helseopplysninger
+  name: redis-helseopplysninger-fhir
+  namespace: helseopplysninger
+spec:
+  plan: startup-4
+  project: nav-dev
