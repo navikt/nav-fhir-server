@@ -41,3 +41,10 @@ out/
 
 ### OS
 *.DS_Store
+
+### Hack to get tailwind to work lol
+
+package.json
+package-lock.json
+node_modules
+tailwind.config.js

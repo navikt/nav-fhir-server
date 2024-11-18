@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient List</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div class=" w-full h-16 border-b border-b-gray-300 flex items-center justify-between">
+    <div class="p-4">
+        <h1 class="text-xl">Secret Nav EPJ</h1>
+    </div>
+    <div class="p-4">
+        Not logged in
+    </div>
+</div>
+<div class="flex h-full">
+    <div class="w-64 max-w-96 p-4 border-r border-r-gray-300">
+        <h3 class="p-2 font-bold">Patients</h3>
+        <div class="flex flex-col gap-3">
+            <button class="flex flex-col p-2 items-start border rounded border-gray-300 hover:bg-gray-50"
+                    th:each="patient : ${patients}">
+                <span class="text-lg" th:text="${patient.name}"></span>
+                <span class="text-sm text-gray-700" th:text="${patient.fnr}"></span>
+            </button>
+        </div>
+    </div>
+    <div class="w-full flex justify-center items-center">
+        <div class="flex flex-col items-center">
+            <img src="/doctor.webp" alt="Doctor, doctoring at the doctors office" height="420" width="420">
+            <p class="font-bold">← Velg en pasient i pasientvelgeren</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
