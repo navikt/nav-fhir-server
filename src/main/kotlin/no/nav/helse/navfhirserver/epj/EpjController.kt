@@ -24,5 +24,12 @@ class EpjController {
 
         return "epj"
     }
+
+    @GetMapping("/partial/patient-picker")
+    fun patientPicker(model: Model): String {
+        model["patients"] = patients
+
+        return "partials/patient-picker"
+    }
 }
 
