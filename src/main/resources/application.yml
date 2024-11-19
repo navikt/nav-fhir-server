@@ -24,27 +24,26 @@ spring:
           fhir-demo-client:
             registration:
               client-id: "NAV_SMART_on_FHIR_example"
-              client-secret: "{noop}secret"
               client-authentication-methods:
-                - "client_secret_basic"
+                - "private_key_jwt"
               authorization-grant-types:
                 - "authorization_code"
                 - "client_credentials"
-                - "refrehs_token"
+                - "refresh_token"
               redirect-uris:
-                - "http://127.0.0.0_5173/"
+                - "http://localhost:5173/"
               post-logout-redirect-uris:
-                - "http://127.0.0.0_5173/"
+                - "http://localhost:5173/"
               scopes:
                 - "openid"
                 - "profile"
                 - "fhirUser"
                 - "launch"
-                - "patient/*.rs"
-                - "user/*.rs"
+                - "patient/*.*" # TODO use more granular scopes
+                - "user/*.*" # TODO use more granular scopes
                 - "offline_access"
             require-authorization-consent: true
-        issuer: "http://auth-server:9000"
+        issuer: "http://localhost:9000"
 
 management:
   endpoints:
@@ -53,15 +52,15 @@ management:
 
 smart:
   configuration:
-    issuer: "http://auth-server:9000"
-    jwks_uri: "http://auth-server:9000/.well-known/jwks.json"
-    authorization_endpoint: "http://auth-server:9000/auth/authorize"
-    token_endpoint: "http://auth-server:9000/auth/token"
-    introspection_endpoint: "http://auth-server:9000/auth/introspect"
-    management_endpoint: "http://auth-server:9000/user/manage"
-    revocation_endpoint: "http://auth-server:9000/user/revoke"
-    user_access_brand_bundle: ""
-    user_access_brand_identifier: ""
+    issuer: "http://localhost:9000"
+    jwks_uri: "http://localhost:9000/.well-known/jwks.json"
+    authorization_endpoint: "http://localhost:9000/auth/authorize"
+    token_endpoint: "http://localhost:9000/auth/token"
+    introspection_endpoint: "http://localhost:9000/auth/introspect"
+    management_endpoint: "http://localhost:9000/user/manage"
+    revocation_endpoint: "http://localhost:9000/user/revoke"
+    user_access_brand_bundle: "https://google.com"
+    user_access_brand_identifier: "https://google.com"
     grant_types_supported:
       - "authorization_code"
       - "client_credentials"
@@ -71,7 +70,12 @@ smart:
       - "fhirUser"
       - "launch"
       - "patient/*.cruds"
+      - "patient/*.*"
+      - "encounter/*.cruds"
+      - "encounter/*.*"
       - "user/*.cruds"
+      - "user/*.*"
+      # - system/*.* # System level scopes are not applicable https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#system-level-scopes
       - "offline_access"
     response_types_supported:
       - "code"
