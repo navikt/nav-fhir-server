@@ -37,7 +37,6 @@ class EpjController {
 
     @GetMapping
     fun index(model: Model): String {
-        model["patients"] = patients
         model["user"] = User("Dr. House O. Apartment", "92391831")
 
         return "epj"
