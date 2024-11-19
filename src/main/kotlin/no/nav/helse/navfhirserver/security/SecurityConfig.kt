@@ -23,28 +23,28 @@ class SecurityConfig() {
         http {
             authorizeHttpRequests {
                 // Create
-                authorize(HttpMethod.POST, "/Patient/**", hasAnyAuthority("SCOPE_patient/*.c"))
-                authorize(HttpMethod.POST, "/Encounter/**", hasAnyAuthority("SCOPE_encounter/*.c"))
-                authorize(HttpMethod.POST, "/User/**", hasAnyAuthority("SCOPE_user/*.c"))
+                authorize(HttpMethod.POST, "/User/**", hasAnyAuthority("SCOPE_user/*.c", "SCOPE_user/*.*"))
+                authorize(HttpMethod.POST, "/Patient/**", hasAnyAuthority("SCOPE_patient/*.c", "SCOPE_patient/*.*"))
+                authorize(HttpMethod.POST, "/Encounter/**", hasAnyAuthority("SCOPE_encounter/*.c", "SCOPE_encounter/*.*"))
 
                 // Read
-                authorize(HttpMethod.GET, "/Patient/**", hasAnyAuthority("SCOPE_patient/*.r"))
-                authorize(HttpMethod.GET, "/Encounter/**", hasAnyAuthority("SCOPE_encounter/*.r"))
-                authorize(HttpMethod.GET, "/User/**", hasAnyAuthority("SCOPE_user/*.r"))
+                authorize(HttpMethod.GET, "/User/**", hasAnyAuthority("SCOPE_user/*.r", "SCOPE_user/*.*"))
+                authorize(HttpMethod.GET, "/Patient/**", hasAnyAuthority("SCOPE_patient/*.r", "SCOPE_patient/*.*"))
+                authorize(HttpMethod.GET, "/Encounter/**", hasAnyAuthority("SCOPE_encounter/*.r", "SCOPE_encounter/*.*"))
 
                 // Update
-                authorize(HttpMethod.PUT, "/Patient/**", hasAnyAuthority("SCOPE_patient/*.u"))
-                authorize(HttpMethod.PUT, "/Encounter/**", hasAnyAuthority("SCOPE_encounter/*.u"))
-                authorize(HttpMethod.PUT, "/User/**", hasAnyAuthority("SCOPE_user/*.u"))
+                authorize(HttpMethod.PUT, "/User/**", hasAnyAuthority("SCOPE_user/*.u", "SCOPE_user/*.*"))
+                authorize(HttpMethod.PUT, "/Patient/**", hasAnyAuthority("SCOPE_patient/*.u", "SCOPE_patient/*.*"))
+                authorize(HttpMethod.PUT, "/Encounter/**", hasAnyAuthority("SCOPE_encounter/*.u", "SCOPE_encounter/*.*"))
 
                 // Delete
-                authorize(HttpMethod.DELETE, "/Patient/**", hasAnyAuthority("SCOPE_patient/*.d"))
+                authorize(HttpMethod.DELETE, "/User/**", hasAnyAuthority("SCOPE_user/*.d", "SCOPE_user/*.*"))
+                authorize(HttpMethod.DELETE, "/Patient/**", hasAnyAuthority("SCOPE_patient/*.d", "SCOPE_patient/*.*"))
                 authorize(
                     HttpMethod.DELETE,
                     "/Encounter/**",
-                    hasAnyAuthority("SCOPE_encounter/*.d")
+                    hasAnyAuthority("SCOPE_encounter/*.d", "SCOPE_encounter/*.*")
                 )
-                authorize(HttpMethod.DELETE, "/User/**", hasAnyAuthority("SCOPE_user/*.d"))
 
                 // General
                 authorize("/.well-known/smart-configuration", permitAll)
