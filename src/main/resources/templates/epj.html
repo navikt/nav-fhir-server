@@ -22,20 +22,29 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <div class="flex h-full">
     <div class="w-64 max-w-96 p-4 border-r border-r-gray-300">
-        <h3 class="p-2 font-bold">Patients</h3>
-        <div id="patient-picker"
-             hx-get="/epj/partial/patient-picker"
-             hx-trigger="load"
-             hx-target="#patient-picker"
-             hx-swap="innerHTML">
-            <span class="loader"></span>
+        <div>
+            <h3 class="p-2 font-bold">Patients</h3>
+            <div id="patient-picker"
+                 hx-get="/epj/partials/patient-picker"
+                 hx-trigger="load"
+                 hx-target="#patient-picker"
+                 hx-swap="innerHTML">
+                <span class="loader"></span>
+            </div>
+        </div>
+        <div class="mt-4">
+            <h3 class="p-2 font-bold">SMART Apps</h3>
+            <div id="app-picker"
+                 hx-get="/epj/partials/smart-picker"
+                 hx-trigger="load"
+                 hx-target="#app-picker"
+                 hx-swap="innerHTML">
+                <span class="loader"></span>
+            </div>
         </div>
     </div>
-    <div class="w-full flex justify-center items-center">
-        <div class="flex flex-col items-center">
-            <img src="/doctor.webp" alt="Doctor, doctoring at the doctors office" height="420" width="420">
-            <p class="font-bold">← Velg en pasient i pasientvelgeren</p>
-        </div>
+    <div id="inner-frame" class="w-full h-full">
+        <div th:replace="~{fragments/inner-default :: inner-default}"></div>
     </div>
 </div>
 </body>
