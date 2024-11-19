@@ -2,11 +2,28 @@
 <html>
 <body>
 <div class="flex flex-col gap-3">
-    <button class="flex flex-col p-2 items-start border rounded border-gray-300 hover:bg-gray-50"
-            th:each="patient : ${patients}">
-        <span class="text-lg" th:text="${patient.name}"></span>
-        <span class="text-sm text-gray-700" th:text="${patient.fnr}"></span>
-    </button>
+    <h3 class="p-2 font-bold">Patients</h3>
+    <form hx-post="/epj/consultation/start"
+          hx-target="#patient-section"
+          hx-swap="innerHTML"
+          class="flex flex-col gap-3">
+
+        <select id="patientSelect"
+                name="fnr"
+                class="border rounded border-gray-300 p-2"
+                required>
+            <option value="" disabled selected>Select a patient</option>
+            <option th:each="patient : ${patients}"
+                    th:value="${patient.fnr}"
+                    th:text="${patient.name + ' (' + patient.fnr + ')'}">
+            </option>
+        </select>
+
+        <button type="submit"
+                class="mt-3 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Start consultation
+        </button>
+    </form>
 </div>
 </body>
 </html>

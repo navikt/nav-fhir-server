@@ -1,24 +1,24 @@
 package no.nav.helse.navfhirserver.epj
 
-import org.springframework.ui.Model;
+import org.springframework.ui.Model
 import org.springframework.stereotype.Controller
 import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 
+// TODO: From some kinf of service, inject it with BEANS 🫘 🫘 🫘 🫘 🫘 🫘
+private data class Patient(val name: String, val fnr: String)
+
+private val patients = listOf(
+    Patient("Ola Nordmann", "45847100951"),
+    Patient("Kari Karisdottir", "65927600603"),
+)
 
 @Controller
 @RequestMapping("/epj")
 class EpjController {
-
-    // TODO: From some kinf of service, inject it with BEANS 🫘 🫘 🫘 🫘 🫘 🫘
-    private data class Patient(val name: String, val fnr: String)
-
-    private val patients = listOf(
-        Patient("Ola Nordmann", "45847100951"),
-        Patient("Kari Karisdottir", "65927600603"),
-    )
 
     private data class App(val name: String, val clientId: String, val url: String)
 
@@ -71,3 +71,27 @@ class EpjController {
     }
 }
 
+@Controller
+@RequestMapping("/epj/consultation")
+class ConsultationController {
+
+    @PostMapping("/start")
+    fun startConsultation(
+        @RequestParam fnr: String,
+        model: Model
+    ): String {
+        model["fnr"] = fnr
+        model["name"] = patients.find { it.fnr == fnr }?.name ?: throw IllegalArgumentException("Unknown patient: $fnr")
+
+        // TODO set server context about the consultation
+        return "partials/consultation/start"
+    }
+
+    @PostMapping("/end")
+    fun endConsultation(
+        model: Model
+    ): String {
+        // TODO clear server context about the consultation
+        return "partials/consultation/end"
+    }
+}
