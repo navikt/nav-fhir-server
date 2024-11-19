@@ -56,11 +56,16 @@ class EpjController {
         @RequestParam app: String,
         model: Model
     ): String {
+        if (app == "none") {
+            return "fragments/inner-default"
+        }
+
         val appToLaunch = apps.find { it.clientId == app } ?: throw IllegalArgumentException("Unknown app: $app")
         // TODO: Don't hardcode iss and code
         val launchUrl = "${appToLaunch.url}/launch?iss=https://www.fhir.dev.nav.no&code=foo-bar-baz"
 
         model["url"] = launchUrl
+        model["name"] = appToLaunch.name
 
         return "partials/inner-launch"
     }

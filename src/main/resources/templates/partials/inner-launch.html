@@ -1,13 +1,28 @@
 <!DOCTYPE html>
 <html>
 <body>
-<div class="w-full h-full flex justify-center items-center">
+<div class="w-full h-full flex flex-col justify-center items-center">
     <iframe class="w-full h-full border rounded"
             th:src="${url}"
             frameborder="0"
             allowfullscreen>
         <span class="loader"></span>
     </iframe>
+    <div class="h-10 w-full flex items-center justify-between">
+        <div class="py-2 px-4">
+            SMART App: <span th:text="${name}"></span>
+        </div>
+        <div>
+            <button
+                    class="py-2 px-4 hover:bg-gray-200"
+                    hx-get="/epj/partials/launch?app=none"
+                    hx-target="#inner-frame"
+                    hx-swap="innerHTML"
+            >
+                Lukk app
+            </button>
+        </div>
+    </div>
 </div>
 </body>
 </html>
