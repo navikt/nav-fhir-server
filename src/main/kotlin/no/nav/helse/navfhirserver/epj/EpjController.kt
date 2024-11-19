@@ -20,6 +20,11 @@ private val patients = listOf(
 @RequestMapping("/epj")
 class EpjController {
 
+    private data class User(
+        val name: String,
+        val hpr: String,
+    )
+
     private data class App(val name: String, val clientId: String, val url: String)
 
     private val apps = listOf(
@@ -33,6 +38,7 @@ class EpjController {
     @GetMapping
     fun index(model: Model): String {
         model["patients"] = patients
+        model["user"] = User("Dr. House O. Apartment", "92391831")
 
         return "epj"
     }
