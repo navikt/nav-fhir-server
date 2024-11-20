@@ -1,0 +1,25 @@
+name: Deploy Redis
+on:
+  push:
+    paths:
+      - .github/workflows/deploy-redis.yml
+      - nais/.nais-dev-redis.yaml
+    branches:
+      - main
+      - chore/deploy-dev
+
+permissions:
+  id-token: write
+
+jobs:
+  deploy-redis-dev:
+    name: Deploy redis in dev
+    environment:
+      name: redis-dev
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/nais-dev-redis.yaml
