@@ -33,6 +33,11 @@ class EpjController {
             clientId = "syk-inn",
             url = "https://www.ekstern.dev.nav.no/samarbeidspartner/sykmelding/fhir"
         ),
+        App(
+            name = "Leo's SMART Probe",
+            clientId = "NAV_SMART_on_FHIR_example",
+            url = "https://nav-on-fhir.ekstern.dev.nav.no"
+        ),
     )
 
     @GetMapping
