@@ -19,12 +19,12 @@
     <script src="https://unpkg.com/htmx.org@2.0.3"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-blue-900 text-white">
 <div th:replace="~{fragments/header :: header}"></div>
 <div class="flex h-full">
-    <div class="min-w-72 w-72 max-w-72 p-4 border-r border-r-gray-300">
-        <div id="patient-section" class="min-h-40">
-            <h3 class="p-2 font-bold">Patients</h3>
+    <div class="min-w-72 w-72 max-w-72 p-4 pt-0">
+        <div id="patient-section" class="min-h-40 mt-2">
+            <h3 class="p-2 font-bold">Your patients</h3>
             <div id="patient-picker"
                  hx-get="/epj/partials/patient-picker"
                  hx-trigger="load"
@@ -44,9 +44,10 @@
             </div>
         </div>
     </div>
-    <div id="inner-frame" class="w-full h-full">
+    <div id="inner-frame" class="w-full h-full rounded-l-3xl bg-white text-black overflow-hidden">
         <div th:replace="~{fragments/inner-default :: inner-default}"></div>
     </div>
 </div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
