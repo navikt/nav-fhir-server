@@ -42,7 +42,7 @@ spring:
                 - "patient/*.*" # TODO use more granular scopes
                 - "user/*.*" # TODO use more granular scopes
                 - "offline_access"
-            require-authorization-consent: true
+            require-authorization-consent: false
         issuer: "http://localhost:9000"
 
 management:
@@ -54,9 +54,9 @@ smart:
   configuration:
     issuer: "http://localhost:9000"
     jwks_uri: "http://localhost:9000/.well-known/jwks.json"
-    authorization_endpoint: "http://localhost:9000/auth/authorize"
-    token_endpoint: "http://localhost:9000/auth/token"
-    introspection_endpoint: "http://localhost:9000/auth/introspect"
+    authorization_endpoint: "http://localhost:9000/oauth2/authorize"
+    token_endpoint: "http://localhost:9000/oauth2/token"
+    introspection_endpoint: "http://localhost:9000/oauth2/introspect"
     management_endpoint: "http://localhost:9000/user/manage"
     revocation_endpoint: "http://localhost:9000/user/revoke"
     user_access_brand_bundle: "https://google.com"

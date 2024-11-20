@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -97,6 +98,9 @@ class SecurityConfig() {
                 authorize("/.well-known/**", permitAll)
                 authorize("/metadata", permitAll)
                 authorize("/epj", permitAll)
+                authorize("/error", permitAll)
+                authorize("/auth/**", permitAll)
+                authorize("/oauth2/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
             oauth2ResourceServer {
@@ -112,9 +116,15 @@ class SecurityConfig() {
         return http.build()
     }
 
+    @Bean
+    fun authorizationServerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http)
+        return http.build()
+    }
+
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration().apply {
-            allowedOrigins = listOf("http://localhost:5173")
+            allowedOrigins = listOf("http://localhost:5173", "https://syk-inn.ekstern.dev.nav.no", "https://nav-on-fhir.ekstern.dev.nav.no")
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("Authorization", "Content-Type", "X-Requested-With")
             allowCredentials = true
