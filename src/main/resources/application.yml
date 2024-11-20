@@ -18,6 +18,11 @@ spring:
     deserialization:
       fail-on-unknown-properties: false
 
+management:
+  endpoints:
+    web:
+      base-path: /internal/actuator
+
 smart:
   configuration:
     issuer: "http://auth-server:9000"
