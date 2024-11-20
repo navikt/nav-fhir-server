@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
 <body>
-<div class=" w-full h-16 border-b border-b-gray-300 flex items-center justify-between" th:fragment="header">
-    <div class="p-4">
-        <h1 class="text-xl">Secret Nav EPJ</h1>
+<div class="w-full"
+     th:fragment="header">
+    <div class="title-bar" th:fragment="header">
+        <div class="title-bar-text">Secret Nav EPJ</div>
+        <div class="title-bar-controls">
+            <button aria-label="Close" class="bg-silver"></button>
+        </div>
     </div>
-    <div class="p-4 text-right">
+    <div class="p-2 text-right absolute top-6 right-2">
+        <div class="font-bold">Logged in as:</div>
         <div class="font-bold" th:text="${user.name}"></div>
-        <div class="text-sm text-gray-600" th:text="${user.hpr}"></div>
+        <div class="text-sm text-gray-700" th:text="${user.hpr}"></div>
     </div>
 </div>
 </body>

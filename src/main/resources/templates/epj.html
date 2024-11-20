@@ -4,49 +4,62 @@
     <title>Patient List</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="icon" type="image/png" href="/epj/favicon.ico">
-    <link rel="stylesheet" href="/epj/global.css">
-    <style>
-        html, body {
-            height: 100%;
-        }
 
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
     <script src="https://unpkg.com/htmx.org@2.0.3"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="icon" type="image/png" href="/epj/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/98.css">
+    <link rel="stylesheet" href="/epj/global.css">
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="window">
 <div th:replace="~{fragments/header :: header}"></div>
 <div class="flex h-full">
-    <div class="min-w-72 w-72 max-w-72 p-4 border-r border-r-gray-300">
-        <div id="patient-section" class="min-h-40">
-            <h3 class="p-2 font-bold">Patients</h3>
-            <div id="patient-picker"
-                 hx-get="/epj/partials/patient-picker"
-                 hx-trigger="load"
-                 hx-target="#patient-section"
-                 hx-swap="innerHTML">
-                <span class="loader"></span>
-            </div>
-        </div>
-        <div class="mt-4">
-            <h3 class="p-2 font-bold">SMART Apps</h3>
-            <div id="app-picker"
-                 hx-get="/epj/partials/smart-picker"
-                 hx-trigger="load"
-                 hx-target="#app-picker"
-                 hx-swap="innerHTML">
-                <span class="loader"></span>
+    <div class="flex flex-col min-w-72 w-72 max-w-72">
+        <menu role="tablist" class="!mt-2">
+            <li role="tab" aria-selected="true"><a href="#tabs">Consultation</a></li>
+            <li role="tab"><a href="#tabs">Diagnosises</a></li>
+        </menu>
+        <div class="window grow border-b-0" role="tabpanel">
+            <div class="window-body">
+                <div id="patient-section" class="min-h-40">
+                    <h3 class="p-2 text-xs">Patients</h3>
+                    <div id="patient-picker"
+                         hx-get="/epj/partials/patient-picker"
+                         hx-trigger="load"
+                         hx-target="#patient-section"
+                         hx-swap="innerHTML">
+                        <span class="loader"></span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h3 class="p-2 text-xs">SMART Apps</h3>
+                    <div id="app-picker"
+                         hx-get="/epj/partials/smart-picker"
+                         hx-trigger="load"
+                         hx-target="#app-picker"
+                         hx-swap="innerHTML">
+                        <span class="loader"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div id="inner-frame" class="w-full h-full">
         <div th:replace="~{fragments/inner-default :: inner-default}"></div>
     </div>
+</div>
+<div class="status-bar z-10">
+    <p class="status-bar-field">Press F1 for help</p>
+    <p class="status-bar-field">Slide 1</p>
+    <p class="status-bar-field">CPU Usage: 14%</p>
 </div>
 </body>
 </html>
