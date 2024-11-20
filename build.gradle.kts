@@ -30,6 +30,7 @@ dependencies {
       implementation("ca.uhn.hapi.fhir:org.hl7.fhir.r4:6.4.0")
     }
   }
+  implementation("org.springframework.boot:spring-boot-starter-actuator")
 
   developmentOnly("org.springframework.boot:spring-boot-devtools")
 
