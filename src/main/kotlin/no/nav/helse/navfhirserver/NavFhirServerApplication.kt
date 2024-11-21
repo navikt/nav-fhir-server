@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 
 @EnableWebMvc
 @SpringBootApplication
-@ConfigurationPropertiesScan("no.nav.helse.navfhirserver")
 class NavFhirServerApplication
 
 fun main(args: Array<String>) {

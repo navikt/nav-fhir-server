@@ -20,84 +20,14 @@ spring:
   security:
     oauth2:
       authorizationserver:
-        client:
-          fhir-demo-client:
-            registration:
-              client-id: "NAV_SMART_on_FHIR_example"
-              client-authentication-methods:
-                - "private_key_jwt"
-              authorization-grant-types:
-                - "authorization_code"
-                - "client_credentials"
-                - "refresh_token"
-              redirect-uris:
-                - "http://localhost:5173/"
-              post-logout-redirect-uris:
-                - "http://localhost:5173/"
-              scopes:
-                - "openid"
-                - "profile"
-                - "fhirUser"
-                - "launch"
-                - "patient/*.*" # TODO use more granular scopes
-                - "user/*.*" # TODO use more granular scopes
-                - "offline_access"
-            require-authorization-consent: false
-        issuer: "http://localhost:9000"
-
-management:
-  endpoints:
-    web:
-      base-path: /internal/actuator
-
-smart:
-  configuration:
-    issuer: "http://localhost:9000"
-    jwks_uri: "http://localhost:9000/.well-known/jwks.json"
-    authorization_endpoint: "http://localhost:9000/oauth2/authorize"
-    token_endpoint: "http://localhost:9000/oauth2/token"
-    introspection_endpoint: "http://localhost:9000/oauth2/introspect"
-    management_endpoint: "http://localhost:9000/user/manage"
-    revocation_endpoint: "http://localhost:9000/user/revoke"
-    user_access_brand_bundle: "https://google.com"
-    user_access_brand_identifier: "https://google.com"
-    grant_types_supported:
-      - "authorization_code"
-      - "client_credentials"
-    scopes_supported:
-      - "openid"
-      - "profile"
-      - "fhirUser"
-      - "launch"
-      - "patient/*.cruds"
-      - "patient/*.*"
-      - "encounter/*.cruds"
-      - "encounter/*.*"
-      - "user/*.cruds"
-      - "user/*.*"
-      # - system/*.* # System level scopes are not applicable https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#system-level-scopes
-      - "offline_access"
-    response_types_supported:
-      - "code"
-      - "token"
-    capabilities:
-      - "launch-ehr"
-      - "launch-standalone"
-      - "client-public"
-      - "client-confidential-symmetric"
-      - "client-confidential-asymmetric"
-      - "sso-openid-connect"
-      - "context-passthrough-banner"
-      - "context-passthrough-style"
-      - "context-ehr-patient"
-      - "context-ehr-encounter"
-      - "context-standalone-patient"
-      - "context-standalone-encounter"
-      - "permission-offline"
-      - "permission-patient"
-      - "permission-user"
-      - "permission-v1"
-      - "permission-v2"
-      - "authorize-post"
-    code_challenge_methods_supported:
-      - "S256"
+        issuer: http://localhost:9000
+        endpoint:
+          token-uri: /v1/oauth2/token
+          authorization-uri: /v1/oauth2/authorize
+          jwk-set-uri: /v1/oauth2/jwks
+          token-introspection-uri: /v1/oauth2/introspect
+          token-revocation-uri: /v1/oauth2/revoke
+          oidc:
+            logout-uri: /v1/connect/logout
+            client-registration-uri: /v1/connect/register
+            user-info-uri: /v1/userinfo

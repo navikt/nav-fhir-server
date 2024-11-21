@@ -1,33 +1,66 @@
 package no.nav.helse.navfhirserver.smart
 
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/.well-known")
-class SmartConfigurationController(
-    private val smartConfig: SmartConfigurationProperties
-) {
+class SmartConfigurationController(@Value("\${server.base-url}") private val baseUrl: String) {
 
-    @GetMapping("/smart-configuration", produces = ["application/json"])
-    fun getSmartConfiguration(): Map<String, Any> {
-        return mapOf(
-            "issuer" to smartConfig.issuer,
-            "jwks_uri" to smartConfig.jwksUri,
-            "authorization_endpoint" to smartConfig.authorizationEndpoint,
-            "token_endpoint" to smartConfig.tokenEndpoint,
-            "management_endpoint" to smartConfig.managementEndpoint,
-            "introspection_endpoint" to smartConfig.introspectionEndpoint,
-            "revocation_endpoint" to smartConfig.revocationEndpoint,
-            "user_access_brand_bundle" to smartConfig.userAccessBrandBundle,
-            "user_access_brand_identifier" to smartConfig.userAccessBrandIdentifier,
-            "grant_types_supported" to smartConfig.grantTypesSupported,
-            "scopes_supported" to smartConfig.scopesSupported,
-            "response_types_supported" to smartConfig.responseTypesSupported,
-            "capabilities" to smartConfig.capabilities,
-            "code_challenge_methods_supported" to smartConfig.codeChallengeMethodsSupported
+
+
+    @GetMapping("/.well-known/smart-configuration", produces = ["application/json"])
+    fun getSmartConfiguration(): ResponseEntity<SmartConfiguration> {
+        val config = SmartConfiguration(
+            issuer = baseUrl,
+            jwksUri = "$baseUrl/v1/oauth2/jwks",
+            authorizationEndpoint = "$baseUrl/v1/oauth2/authorize",
+            tokenEndpoint = "$baseUrl/v1/oauth2/token",
+            managementEndpoint = "$baseUrl/v1/oauth2/manage",
+            introspectionEndpoint = "$baseUrl/v1/oauth2/introspect",
+            revocationEndpoint = "$baseUrl/v1/oauth2/revoke",
+            userAccessBrandBundle = "$baseUrl/v1/user/bundle",
+            userAccessBrandIdentifier = "$baseUrl/v1/user/bundle/identifier",
+            grantTypesSupported = listOf("authorization_code"),
+            scopesSupported = listOf(
+                "openid",
+                "profile",
+                "fhirUser",
+                "launch",
+                "patient/*.cruds",
+                "patient/*.*",
+                "encounter/*.cruds",
+                "encounter/*.*",
+                "user/*.cruds",
+                "user/*.*",
+                "offline_access"
+            ),
+            responseTypesSupported = listOf("code", "token"),
+            capabilities = listOf(
+                "launch-ehr",
+                "launch-standalone",
+                "client-public",
+                "client-confidential-symmetric",
+                "client-confidential-asymmetric",
+                "sso-openid-connect",
+                "context-passthrough-banner",
+                "context-passthrough-style",
+                "context-ehr-patient",
+                "context-ehr-encounter",
+                "context-standalone-patient",
+                "context-standalone-encounter",
+                "permission-offline",
+                "permission-patient",
+                "permission-user",
+                "permission-v1",
+                "permission-v2",
+                "authorize-post"
+            ),
+            codeChallengeMethodsSupported = listOf("256")
         )
+
+        return ResponseEntity.ok(config)
     }
 
 }
