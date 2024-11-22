@@ -3,10 +3,9 @@ on:
   push:
     paths:
       - .github/workflows/deploy-redis.yml
-      - nais/.nais-dev-redis.yaml
+      - .nais/.nais-dev-redis.yaml
     branches:
       - main
-      - chore/deploy-dev
 
 permissions:
   id-token: write

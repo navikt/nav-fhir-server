@@ -58,4 +58,4 @@ spec:
     - name: WONDERWALL_BIND_ADDRESS
       value: $(BIND_ADDRESS)
     - name: WONDERWALL_AUTO_LOGIN
-      value: 'true'
+      value: 'false'

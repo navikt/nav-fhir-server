@@ -12,6 +12,10 @@ spec:
     max: 2
     cpuThresholdPercentage: 90
   port: 9000
+  accessPolicy:
+    inbound:
+      rules:
+        - application: nav-fhir-server-wonderwall
   liveness:
     path: /internal/actuator/health
   readiness:
