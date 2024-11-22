@@ -14,5 +14,5 @@ data class SmartConfiguration(
     val scopesSupported: List<String>,
     val responseTypesSupported: List<String>,
     val capabilities: List<String>,
-    val codeChallengeMethodsSupported: List<String>
+    val codeChallengeMethodsSupported: List<String>,
 )

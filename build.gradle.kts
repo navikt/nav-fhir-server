@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "2.0.21"
     kotlin("plugin.spring") version "2.0.21"
-    id("org.springframework.boot") version "3.3.5"
+    id("org.springframework.boot") version "3.4.0"
     id("io.spring.dependency-management") version "1.1.6"
 }
 
@@ -41,8 +41,6 @@ dependencies {
 
     // Fix xmlunit vulnerability: https://osv.dev/vulnerability/GHSA-chfm-68vv-pvw5
     testImplementation("org.xmlunit:xmlunit-core:2.10.0")
-
-    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.76.Final:osx-aarch_64")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

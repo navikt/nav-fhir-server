@@ -5,32 +5,30 @@ import org.springframework.stereotype.Component
 @Component
 class SmartScopeUtil {
 
-    private val actionMappings = mapOf(
-        "c" to "CREATE",
-        "r" to "READ",
-        "u" to "UPDATE",
-        "d" to "DELETE",
-        "s" to "SEARCH",
-        "*" to "FULL"
-    )
+    private val actionMappings =
+        mapOf(
+            "c" to "CREATE",
+            "r" to "READ",
+            "u" to "UPDATE",
+            "d" to "DELETE",
+            "s" to "SEARCH",
+            "*" to "FULL",
+        )
 
     fun normalizeScopes(requestedScopes: Set<String>): Set<String> {
         val smartScopes = Regex("(patient|user|system)/[^.]+\\.(?:\\*|[cruds]+)\$")
 
-        return requestedScopes.flatMap { scope ->
-            when {
-                scope in setOf(
-                    "openid",
-                    "profile",
-                    "launch",
-                    "fhirUser",
-                    "offline_access"
-                ) -> setOf(scope)
+        return requestedScopes
+            .flatMap { scope ->
+                when {
+                    scope in setOf("openid", "profile", "launch", "fhirUser", "offline_access") ->
+                        setOf(scope)
 
-                scope.matches(smartScopes) -> normalizeResourceScope(scope)
-                else -> emptySet()
+                    scope.matches(smartScopes) -> normalizeResourceScope(scope)
+                    else -> emptySet()
+                }
             }
-        }.toSet()
+            .toSet()
     }
 
     fun normalizeResourceScope(scope: String): Set<String> {

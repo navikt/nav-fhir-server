@@ -3,7 +3,8 @@ server:
 
 logging:
   level:
-    org.springframework.security: trace
+    org.springframework.security: TRACE
+    ca.uhn.fhir: DEBUG
 
 spring:
   main:
@@ -17,17 +18,3 @@ spring:
       allow-numeric-leading-zeros: true
     deserialization:
       fail-on-unknown-properties: false
-  security:
-    oauth2:
-      authorizationserver:
-        issuer: http://localhost:9000
-        endpoint:
-          token-uri: /v1/oauth2/token
-          authorization-uri: /v1/oauth2/authorize
-          jwk-set-uri: /v1/oauth2/jwks
-          token-introspection-uri: /v1/oauth2/introspect
-          token-revocation-uri: /v1/oauth2/revoke
-          oidc:
-            logout-uri: /v1/connect/logout
-            client-registration-uri: /v1/connect/register
-            user-info-uri: /v1/userinfo

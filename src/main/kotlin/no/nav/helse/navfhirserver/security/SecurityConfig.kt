@@ -3,21 +3,29 @@ package no.nav.helse.navfhirserver.security
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
+import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.interfaces.RSAPrivateKey
+import java.security.interfaces.RSAPublicKey
+import java.util.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
+import org.springframework.security.oauth2.core.oidc.OidcScopes
 import org.springframework.security.oauth2.jwt.JwtDecoder
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
@@ -28,32 +36,30 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.interfaces.RSAPrivateKey
-import java.security.interfaces.RSAPublicKey
-import java.util.*
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 class SecurityConfig() {
 
     @Bean
     @Order(1)
     fun authorizationServerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http)
+        val authConfig = OAuth2AuthorizationServerConfigurer.authorizationServer()
         http
-            .getConfigurer(OAuth2AuthorizationServerConfigurer::class.java)
-            .oidc(Customizer.withDefaults())
-        http
-            .exceptionHandling {
-                it.authenticationEntryPoint(LoginUrlAuthenticationEntryPoint("/login"))
+            .securityMatcher(authConfig.endpointsMatcher)
+            .with(authConfig) { authorizationServer ->
+                authorizationServer.oidc(Customizer.withDefaults())
             }
-            .oauth2ResourceServer { it.jwt(Customizer.withDefaults()) }
-
+            .exceptionHandling { exceptions ->
+                exceptions.defaultAuthenticationEntryPointFor(
+                    LoginUrlAuthenticationEntryPoint("/login"),
+                    MediaTypeRequestMatcher(MediaType.TEXT_HTML),
+                )
+            }
         return http.build()
     }
 
@@ -133,47 +139,49 @@ class SecurityConfig() {
                 // General
                 authorize("/.well-known/**", permitAll)
                 authorize("/metadata", permitAll)
-                authorize("/epj", permitAll)
                 authorize("/error", permitAll)
-                authorize("/v1/**", permitAll)
-                authorize("/login", permitAll)
+                authorize("/epj", permitAll) // TODO secure
                 authorize(anyRequest, authenticated)
             }
-            oauth2ResourceServer { jwt { jwtDecoder = jwtDecoder() } }
+            formLogin { Customizer.withDefaults<FormLoginConfigurer<HttpSecurity>>() } // TODO ??
             cors { configurationSource = corsConfigurationSource() }
             csrf { disable() }
         }
+        // http.formLogin(Customizer.withDefaults()) TODO backup
         return http.build()
     }
 
     @Bean
     fun registeredClientRepository(): RegisteredClientRepository {
-        val registeredClient =
+        val asymmetricClient =
             RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("NAV_SMART_on_FHIR_example")
+                .clientId("syk-inn")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .scope("openid")
-                .scope("profile")
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
                 .scope("fhirUser")
                 .scope("launch")
                 .scope("patient/*.*")
                 .scope("user/*.*")
                 .scope("offline_access")
-                .redirectUri("http://localhost:5173")
-                .postLogoutRedirectUri("http://localhost:5173")
+                .redirectUri("https://syk-inn.ekstern.dev.nav.no/samarbeidspartner/sykmelding/fhir")
                 .clientSettings(ClientSettings.builder().requireProofKey(true).build())
                 .build()
-        return InMemoryRegisteredClientRepository(registeredClient)
+        return InMemoryRegisteredClientRepository(asymmetricClient)
     }
 
     @Bean
-    fun authorizationServerSettings(): AuthorizationServerSettings {
-        return AuthorizationServerSettings.builder()
-            .issuer("http://localhost:9000")
-            .build()
+    fun userDetailsService(): UserDetailsService {
+        val user =
+            User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("password")
+                .roles("USER")
+                .build()
+        return InMemoryUserDetailsManager(user)
     }
 
     @Bean
@@ -182,33 +190,45 @@ class SecurityConfig() {
         val publicKey = keyPair.public as RSAPublicKey
         val privateKey = keyPair.private as RSAPrivateKey
 
-        val rsaKey = RSAKey.Builder(publicKey)
-            .privateKey(privateKey)
-            .keyID(UUID.randomUUID().toString())
-            .build()
+        val rsaKey =
+            RSAKey.Builder(publicKey)
+                .privateKey(privateKey)
+                .keyID(UUID.randomUUID().toString())
+                .build()
 
         return ImmutableJWKSet<SecurityContext>(JWKSet(rsaKey))
     }
 
     @Bean
-    fun userDetailsService(): UserDetailsService {
-        val user = User.withDefaultPasswordEncoder()
-            .username("user")
-            .password("password")
-            .roles("USER")
+    fun jwtDecoder(jwkSource: JWKSource<SecurityContext>): JwtDecoder {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource)
+    }
+
+    @Bean
+    fun authorizationServerSettings(): AuthorizationServerSettings {
+        return AuthorizationServerSettings.builder()
+            .issuer("http://localhost:9000")
+            .authorizationEndpoint("/oauth2/fhir/authorize")
+            .tokenEndpoint("/oauth2/fhir/token")
+            .tokenIntrospectionEndpoint("/oauth2/fhir/introspect")
+            .tokenRevocationEndpoint("/oauth2/fhir/revoke")
+            .jwkSetEndpoint("/oauth2/fhir/jwks")
+            .oidcLogoutEndpoint("/connect/fhir/logout")
+            .oidcUserInfoEndpoint("/connect/fhir/userinfo")
+            .oidcClientRegistrationEndpoint("/connect/fhir/register")
             .build()
-        return InMemoryUserDetailsManager(user);
+    }
+
+    private fun generateRsaKey(): KeyPair {
+        val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
+        keyPairGenerator.initialize(2048)
+        return keyPairGenerator.generateKeyPair()
     }
 
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config =
             CorsConfiguration().apply {
-                allowedOrigins =
-                    listOf(
-                        "http://localhost:5173",
-                        "https://syk-inn.ekstern.dev.nav.no",
-                        "https://nav-on-fhir.ekstern.dev.nav.no",
-                    )
+                allowedOrigins = listOf("https://syk-inn.ekstern.dev.nav.no")
                 allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 allowedHeaders = listOf("Authorization", "Content-Type", "X-Requested-With")
                 allowCredentials = true
@@ -216,15 +236,5 @@ class SecurityConfig() {
             }
 
         return UrlBasedCorsConfigurationSource().apply { registerCorsConfiguration("/**", config) }
-    }
-
-    private fun jwtDecoder(): JwtDecoder {
-        return NimbusJwtDecoder.withJwkSetUri("http://localhost:9000/v1/oauth2/jwks").build()
-    }
-
-    private fun generateRsaKey(): KeyPair {
-        val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-        keyPairGenerator.initialize(2048)
-        return keyPairGenerator.generateKeyPair()
     }
 }

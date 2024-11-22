@@ -1,28 +1,31 @@
 package no.nav.helse.navfhirserver.smart
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class SmartConfigurationController(@Value("\${server.base-url}") private val baseUrl: String) {
+class SmartConfigurationController() {
 
 
 
     @GetMapping("/.well-known/smart-configuration", produces = ["application/json"])
     fun getSmartConfiguration(): ResponseEntity<SmartConfiguration> {
         val config = SmartConfiguration(
-            issuer = baseUrl,
-            jwksUri = "$baseUrl/v1/oauth2/jwks",
-            authorizationEndpoint = "$baseUrl/v1/oauth2/authorize",
-            tokenEndpoint = "$baseUrl/v1/oauth2/token",
-            managementEndpoint = "$baseUrl/v1/oauth2/manage",
-            introspectionEndpoint = "$baseUrl/v1/oauth2/introspect",
-            revocationEndpoint = "$baseUrl/v1/oauth2/revoke",
-            userAccessBrandBundle = "$baseUrl/v1/user/bundle",
-            userAccessBrandIdentifier = "$baseUrl/v1/user/bundle/identifier",
-            grantTypesSupported = listOf("authorization_code"),
+            issuer = "http://localhost:9000",
+            jwksUri = "http://localhost:9000/oauth2/fhir/jwks",
+            authorizationEndpoint = "http://localhost:9000/oauth2/fhir/authorize",
+            tokenEndpoint = "http://localhost:9000/oauth2/fhir/token",
+            managementEndpoint = "http://localhost:9000/oauth2/fhir/manage",
+            introspectionEndpoint = "http://localhost:9000/oauth2/fhir/introspect",
+            revocationEndpoint = "http://localhost:9000/oauth2/fhir/revoke",
+            userAccessBrandBundle = "http://localhost:9000/oauth2/fhir/bundle",
+            userAccessBrandIdentifier = "http://localhost:9000/oauth2/fhir/identifier",
+            grantTypesSupported = listOf(
+                "authorization_code",
+                "client_credentials",
+                "refresh_token"
+            ),
             scopesSupported = listOf(
                 "openid",
                 "profile",
