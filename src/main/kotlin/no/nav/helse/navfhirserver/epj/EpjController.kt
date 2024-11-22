@@ -17,6 +17,17 @@ private val patients = listOf(
 )
 
 @Controller
+@RequestMapping("/")
+class FakeLoginController {
+
+    @GetMapping
+    fun index(model: Model): String {
+        return "index"
+    }
+}
+
+
+@Controller
 @RequestMapping("/epj")
 class EpjController {
 

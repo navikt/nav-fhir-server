@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>NavMedFhir - Fake EPJ</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="icon" type="image/png" href="/epj/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/7.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        html {
+            background-image: url('/epj/bg.webp');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #window-body {
+            padding: 16px;
+            padding-top: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="window glass active" style="width: 369px; --window-background-color: #805ba5;">
+        <div class="title-bar">
+            <div class="title-bar-text">EPJ Starter Application</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Close"></button>
+            </div>
+        </div>
+
+        <div class="window-body has-space" id="window-body">
+            <p id="quip">Configuring the flux capacitor...</p>
+            <div role="progressbar" class="animate">
+                <div id="loading-bar" style="width: 37%; transition: width 1s linear;"></div>
+            </div>
+            <div style="padding-top: 22px; display: flex; justify-content: flex-end">
+                <button autofocus class="default" onclick="window.location.href='/epj'">Start NavMedFhir</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const quips = [
+        "Polishing the One Ring...",
+        "Sorting Slytherin's laundry...",
+        "Charging Iron Man's arc reactor...",
+        "Decrypting the Da Vinci Code...",
+        "Calibrating the Death Star's lasers...",
+        "Hacking into the Matrix...",
+        "Feeding Mogwai after midnight...",
+        "Debugging Skynet...",
+        "Sharpening Wolverine's claws...",
+        "Upgrading R2-D2's firmware...",
+        "Trimming Groot's leaves...",
+        "Counting the Dragon Balls...",
+        "Summoning Exodia, the Forbidden One...",
+        "Preparing Batman's utility belt...",
+        "Spooling the TARDIS' time engines...",
+        "Recalculating the Kessel Run...",
+        "Casting Expelliarmus...",
+        "Crossing the streams (just once)...",
+        "Refueling the Millennium Falcon...",
+        "Debugging Tony Stark's suit...",
+        "Searching for Atlantis...",
+        "Consulting Doctor Strange's timeline...",
+        "Painting Bob Ross' happy trees...",
+        "Scanning the Holodeck...",
+        "Firing up Optimus Prime...",
+        "Cycling the Animus...",
+        "Untangling Spider-Man's webs...",
+        "Encrypting the Book of Shadows...",
+        "Leveling up the Master Sword...",
+        "Herding Tribbles...",
+        "Refilling the Elixir of Life...",
+        "Chasing Carmen Sandiego...",
+        "Resetting the Stargate coordinates...",
+        "Recharging Thor’s hammer...",
+        "Digging up a Shard of Narsil...",
+        "Scripting NPC dialogue...",
+        "Refilling Mario's mushrooms...",
+        "Powering up the Hyperbolic Time Chamber...",
+        "Rewiring HAL 9000...",
+        "Tuning the Infinity Gauntlet...",
+        "Reading Gandalf’s scrolls...",
+        "Unlocking the Vault of Glass...",
+        "Tapping a Mana Crystal...",
+        "Hiding Waldo...",
+        "Deploying the Bat-Signal...",
+        "Balancing Thanos' snap...",
+        "Calibrating the Phaser array...",
+        "Stashing Horcruxes...",
+        "Reloading Chewbacca's bowcaster...",
+        "Patching up Deadpool...",
+        "Looting chests in Skyrim...",
+        "Boosting Sonic’s rings...",
+        "Reactivating Cortana...",
+        "Syncing the Triforce...",
+        "Scanning for Metroids...",
+        "Brewing Felix Felicis...",
+        "Taming a Demogorgon...",
+        "Deploying the Kobayashi Maru...",
+        "Training with Yoda...",
+        "Refactoring Rick's portal gun...",
+        "Refitting the Normandy SR-2...",
+        "Gathering shards of the Triforce...",
+        "Planting Audrey II's seeds...",
+        "Releasing the Kraken...",
+        "Powering up the Omnitrix...",
+        "Quoting Monty Python...",
+        "Finding Narnia in the wardrobe...",
+        "Washing the Batmobile...",
+        "Applying Jedi mind tricks...",
+        "Loading Gandalf's fireworks...",
+        "Charging Kamehameha...",
+        "Fixing the Ghostbusters' proton pack...",
+        "Pondering the airspeed of an unladen swallow...",
+        "Assembling the Fellowship...",
+        "Polishing the Sorting Hat...",
+        "Hacking into Jurassic Park's systems...",
+        "Cooking blue meth with Walter White...",
+        "Chasing the Road Runner...",
+        "Solving Riddler’s puzzles...",
+        "Pulling Excalibur from the stone...",
+        "Rolling for initiative...",
+        "Resetting the Grid...",
+        "Teaching Pikachu Thunderbolt...",
+        "Flipping the flux polarity...",
+        "Summoning the Zords...",
+        "Brewing Butterbeer...",
+        "Reading the Hitchhiker's Guide...",
+        "Powering up the Star Forge...",
+        "Hiding the Philosopher’s Stone...",
+        "Casting Magic Missile...",
+        "Catching all 151 Pokémon...",
+        "Fortifying Winterfell...",
+        "Mapping the Upside Down...",
+        "Upgrading Tony Stark’s nanotech...",
+        "Decrypting the Enigma machine...",
+        "Re-forging the Sword of Gryffindor...",
+        "Installing VisiCalc on the Apple II...",
+        "Preparing the spice melange...",
+        "Counting Schrödinger’s cats..."
+    ];
+
+    const quipElement = document.getElementById("quip");
+    const loadingBar = document.getElementById("loading-bar");
+
+    function updateQuip() {
+        const randomIndex = Math.floor(Math.random() * quips.length);
+        const randomDelay = Math.random() * 3000 + 2000;
+
+        quipElement.textContent = quips[randomIndex];
+
+        // move bar forward a bit, stop at 97%
+        const currentWidth = parseFloat(loadingBar.style.width);
+        if (currentWidth <= 97) {
+            const newWidth = currentWidth + 1;
+            loadingBar.style.width = newWidth + "%";
+        }
+
+        setTimeout(updateQuip, randomDelay);
+    }
+
+    updateQuip();
+</script>
+</body>
+</html>
