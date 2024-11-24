@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class WebConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/epj/**")
-            .addResourceLocations("classpath:/static/")
+        registry.addResourceHandler("/epj/**").addResourceLocations("classpath:/static/")
     }
 }
