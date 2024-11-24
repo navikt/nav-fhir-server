@@ -3,7 +3,8 @@ server:
 
 logging:
   level:
-    org.springframework.security: trace
+    org.springframework.security: TRACE
+    ca.uhn.fhir: DEBUG
 
 spring:
   main:
@@ -17,55 +18,3 @@ spring:
       allow-numeric-leading-zeros: true
     deserialization:
       fail-on-unknown-properties: false
-
-management:
-  endpoints:
-    web:
-      base-path: /internal/actuator
-
-smart:
-  configuration:
-    issuer: "http://auth-server:9000"
-    jwks_uri: "http://auth-server:9000/.well-known/jwks.json"
-    authorization_endpoint: "http://auth-server:9000/auth/authorize"
-    token_endpoint: "http://auth-server:9000/auth/token"
-    introspection_endpoint: "http://auth-server:9000/auth/introspect"
-    management_endpoint: "http://auth-server:9000/user/manage"
-    revocation_endpoint: "http://auth-server:9000/user/revoke"
-    user_access_brand_bundle: ""
-    user_access_brand_identifier: ""
-    grant_types_supported:
-      - "authorization_code"
-      - "client_credentials"
-    scopes_supported:
-      - "openid"
-      - "profile"
-      - "fhirUser"
-      - "launch"
-      - "patient/*.cruds"
-      - "user/*.cruds"
-      - "offline_access"
-    response_types_supported:
-      - "code"
-      - "token"
-    capabilities:
-      - "launch-ehr"
-      - "launch-standalone"
-      - "client-public"
-      - "client-confidential-symmetric"
-      - "client-confidential-asymmetric"
-      - "sso-openid-connect"
-      - "context-passthrough-banner"
-      - "context-passthrough-style"
-      - "context-ehr-patient"
-      - "context-ehr-encounter"
-      - "context-standalone-patient"
-      - "context-standalone-encounter"
-      - "permission-offline"
-      - "permission-patient"
-      - "permission-user"
-      - "permission-v1"
-      - "permission-v2"
-      - "authorize-post"
-    code_challenge_methods_supported:
-      - "S256"

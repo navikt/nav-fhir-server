@@ -61,7 +61,8 @@ class FhirConfiguration {
                         .jackson2JsonDecoder(
                             Jackson2JsonDecoder(objectMapper, FHIR_JSON).apply {
                                 maxInMemorySize = size
-                            })
+                            }
+                        )
                     configurer
                         .defaultCodecs()
                         .jackson2JsonEncoder(Jackson2JsonEncoder(objectMapper, FHIR_JSON))
