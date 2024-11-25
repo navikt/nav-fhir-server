@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <body>
-<div class="flex flex-col gap-3">
-    <button class="flex flex-col p-2 items-start border rounded border-gray-300 hover:bg-blue-950"
+<div id="apps-picker" class="flex flex-col gap-3">
+    <p class="text-xs mb-2 ml-2">Apps require an active consultation</p>
+    <button class="flex flex-col p-2 items-start border rounded border-gray-300 enabled:hover:bg-blue-950 disabled:opacity-60"
             th:each="app : ${apps}"
             th:attr="hx-get='/epj/partials/launch?app=' + ${app.clientId}"
             hx-target="#inner-frame"
             hx-swap="innerHTML"
+            disabled
     >
         <span class="text-lg" th:text="${app.name}"></span>
         <span class="text-sm text-gray-200" th:text="${app.clientId}"></span>

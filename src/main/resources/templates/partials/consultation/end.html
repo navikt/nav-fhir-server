@@ -8,5 +8,10 @@
      hx-swap="innerHTML">
     <span class="loader"></span>
 </div>
+<script>
+    document.querySelectorAll('#apps-picker button').forEach(function (button) {
+        button.disabled = true;
+    });
+</script>
 </body>
 </html>
