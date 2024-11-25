@@ -125,11 +125,17 @@ class SecurityConfig(
                     hasAnyAuthority("SCOPE_encounter/*.d", "SCOPE_encounter/*.*"),
                 )
 
+                // Not accessible on public ingress anyway
+                authorize("/internal/**", permitAll)
+
+                // Fake EPJ (should be secured by wonderwall)
+                authorize("/", permitAll) // TODO secure
+                authorize("/epj/**", permitAll) // TODO secure
+
                 // General
                 authorize("/.well-known/**", permitAll)
                 authorize("/metadata", permitAll)
                 authorize("/error", permitAll)
-                authorize("/epj/**", permitAll) // TODO secure
                 authorize(anyRequest, authenticated)
             }
             cors { configurationSource = corsConfigurationSource() }
