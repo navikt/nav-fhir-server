@@ -6,23 +6,14 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Value
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.interfaces.RSAPrivateKey
-import java.security.interfaces.RSAPublicKey
-import java.util.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer
 import org.springframework.security.config.annotation.web.invoke
-import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
 import org.springframework.security.oauth2.core.oidc.OidcScopes
@@ -34,31 +25,30 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
-import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.interfaces.RSAPrivateKey
+import java.security.interfaces.RSAPublicKey
+import java.util.*
 
 @Configuration
 @EnableWebSecurity(debug = true)
 class SecurityConfig(
-    @Value("\${authorization.issuer}") private val issuer: String,
-    @Value("\${authorization.client.redirect-uri}") private val clientRedirectUri: String,
-    @Value("\${cors.allowed-origin-patterns}") private val allowedOriginPatterns: List<String>,
+    @Value("\${server.baseUri}") private val baseUri: String,
+    @Value("\${client.redirect-uri}") private val clientRedirectUri: String
 ) {
 
     @Bean
     @Order(1)
     fun authorizationServerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         val authConfig = OAuth2AuthorizationServerConfigurer.authorizationServer()
-        http
-            .securityMatcher(authConfig.endpointsMatcher)
-            .with(authConfig) { authorizationServer ->
-                authorizationServer.oidc(Customizer.withDefaults())
-            }
+        http.securityMatcher(authConfig.endpointsMatcher).with(authConfig) { authorizationServer ->
+            authorizationServer.oidc(Customizer.withDefaults())
+        }
         return http.build()
     }
 
@@ -149,7 +139,7 @@ class SecurityConfig(
     }
 
     @Bean
-    fun registeredClientRepository(): RegisteredClientRepository {
+    fun devClientRepository(): RegisteredClientRepository {
         val asymmetricClient =
             RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("syk-inn")
@@ -164,7 +154,7 @@ class SecurityConfig(
                 .scope("patient/*.*")
                 .scope("user/*.*")
                 .scope("offline_access")
-                .redirectUri(this.clientRedirectUri)
+                .redirectUri(clientRedirectUri)
                 .clientSettings(ClientSettings.builder().requireProofKey(true).build())
                 .build()
         return InMemoryRegisteredClientRepository(asymmetricClient)
@@ -191,9 +181,9 @@ class SecurityConfig(
     }
 
     @Bean
-    fun authorizationServerSettings(): AuthorizationServerSettings {
+    fun devAuthorizationServerSettings(): AuthorizationServerSettings {
         return AuthorizationServerSettings.builder()
-            .issuer(this.issuer)
+            .issuer(baseUri)
             .authorizationEndpoint("/oauth2/fhir/authorize")
             .tokenEndpoint("/oauth2/fhir/token")
             .tokenIntrospectionEndpoint("/oauth2/fhir/introspect")
@@ -214,7 +204,8 @@ class SecurityConfig(
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config =
             CorsConfiguration().apply {
-                allowedOriginPatterns = this.allowedOriginPatterns
+                allowedOriginPatterns =
+                    listOf("https://*.dev.nav.no", "http://localhost:[*]", "http://127.0.0.1:[*]")
                 allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 allowedHeaders = listOf("Authorization", "Content-Type", "X-Requested-With")
                 allowCredentials = true

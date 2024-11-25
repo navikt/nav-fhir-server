@@ -1,15 +1,5 @@
-# application-local.yml
-logging:
-  level:
-    org.springframework.security: TRACE
-    ca.uhn.fhir: TRACE
+server:
+  baseUri: "http://localhost:9000"
 
-authorization:
-  issuer: "http://localhost:9000"
-  client:
-    redirect-uri: "http://localhost:5173/samarbeidspartner/sykmelding/fhir"
-
-cors:
-  allowed-origin-patterns:
-    - "http://localhost:[*]"
-    - "http://127.0.0.1:[*]"
+client:
+  redirect-uri: "http://localhost:5173/samarbeidspartner/sykmelding/fhir"
