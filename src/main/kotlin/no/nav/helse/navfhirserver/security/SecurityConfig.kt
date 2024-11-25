@@ -5,6 +5,11 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.interfaces.RSAPrivateKey
+import java.security.interfaces.RSAPublicKey
+import java.util.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
@@ -35,11 +40,6 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.interfaces.RSAPrivateKey
-import java.security.interfaces.RSAPublicKey
-import java.util.*
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -140,7 +140,7 @@ class SecurityConfig() {
                 authorize("/.well-known/**", permitAll)
                 authorize("/metadata", permitAll)
                 authorize("/error", permitAll)
-                authorize("/epj", permitAll) // TODO secure
+                authorize("/epj/**", permitAll) // TODO secure
                 authorize(anyRequest, authenticated)
             }
             formLogin { Customizer.withDefaults<FormLoginConfigurer<HttpSecurity>>() } // TODO ??
@@ -229,7 +229,8 @@ class SecurityConfig() {
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config =
             CorsConfiguration().apply {
-                allowedOrigins = listOf("https://syk-inn.ekstern.dev.nav.no")
+                allowedOriginPatterns =
+                    listOf("http://localhost:[*]", "http://127.0.0.1:[*]", "https://*.dev.nav.no")
                 allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 allowedHeaders = listOf("Authorization", "Content-Type", "X-Requested-With")
                 allowCredentials = true
