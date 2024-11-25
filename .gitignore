@@ -18,13 +18,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea/codeStyles
-.idea/.gitignore
-.idea/gradle.xml
-.idea/jarRepositories.xml
-.idea/kotlinc.xml
-.idea/misc.xml
-.idea/vcs.xml
+.idea
+!.idea/ktfmt.xml
 *.iws
 *.iml
 *.ipr

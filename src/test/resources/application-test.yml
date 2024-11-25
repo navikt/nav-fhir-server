@@ -1,0 +1,5 @@
+server:
+  baseUri: "http://localhost:9000"
+
+client:
+  redirect-uri: "http://localhost:5173/samarbeidspartner/sykmelding/fhir"

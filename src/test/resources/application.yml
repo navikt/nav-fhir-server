@@ -1,0 +1,21 @@
+# application.yml
+server:
+  port: 9000
+
+logging:
+  level:
+    org.springframework.security: TRACE
+    ca.uhn.fhir: TRACE
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: nav-fhir-server
+  codec:
+    max-in-memory-size: 16MB
+  jackson:
+    parser:
+      allow-numeric-leading-zeros: true
+    deserialization:
+      fail-on-unknown-properties: false
