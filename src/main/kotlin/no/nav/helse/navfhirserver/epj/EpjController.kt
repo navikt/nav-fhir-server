@@ -18,7 +18,7 @@ private val patients =
 @RequestMapping("/")
 class FakeLoginController {
 
-    @GetMapping
+    @GetMapping(produces = ["text/html"])
     fun index(model: Model): String {
         return "index"
     }
