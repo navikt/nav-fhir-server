@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import org.springframework.beans.factory.annotation.Value
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPrivateKey
@@ -43,7 +44,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity(debug = true)
-class SecurityConfig() {
+class SecurityConfig(
+    @Value("\${authorization.issuer}") private val issuer: String,
+    @Value("\${authorization.client.redirect-uri}") private val clientRedirectUri: String,
+    @Value("\${cors.allowed-origin-patterns}") private val allowedOriginPatterns: List<String>,
+) {
 
     @Bean
     @Order(1)
@@ -53,12 +58,6 @@ class SecurityConfig() {
             .securityMatcher(authConfig.endpointsMatcher)
             .with(authConfig) { authorizationServer ->
                 authorizationServer.oidc(Customizer.withDefaults())
-            }
-            .exceptionHandling { exceptions ->
-                exceptions.defaultAuthenticationEntryPointFor(
-                    LoginUrlAuthenticationEntryPoint("/login"),
-                    MediaTypeRequestMatcher(MediaType.TEXT_HTML),
-                )
             }
         return http.build()
     }
@@ -143,11 +142,9 @@ class SecurityConfig() {
                 authorize("/epj/**", permitAll) // TODO secure
                 authorize(anyRequest, authenticated)
             }
-            formLogin { Customizer.withDefaults<FormLoginConfigurer<HttpSecurity>>() } // TODO ??
             cors { configurationSource = corsConfigurationSource() }
             csrf { disable() }
         }
-        // http.formLogin(Customizer.withDefaults()) TODO backup
         return http.build()
     }
 
@@ -167,22 +164,10 @@ class SecurityConfig() {
                 .scope("patient/*.*")
                 .scope("user/*.*")
                 .scope("offline_access")
-                .redirectUri("https://syk-inn.ekstern.dev.nav.no/samarbeidspartner/sykmelding/fhir")
+                .redirectUri(this.clientRedirectUri)
                 .clientSettings(ClientSettings.builder().requireProofKey(true).build())
                 .build()
         return InMemoryRegisteredClientRepository(asymmetricClient)
-    }
-
-    // TODO - Dette er nødvendig, men lag et sikkert passord før løsningen er ferdig
-    @Bean
-    fun userDetailsService(): UserDetailsService {
-        val user =
-            User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build()
-        return InMemoryUserDetailsManager(user)
     }
 
     @Bean
@@ -208,7 +193,7 @@ class SecurityConfig() {
     @Bean
     fun authorizationServerSettings(): AuthorizationServerSettings {
         return AuthorizationServerSettings.builder()
-            .issuer("http://localhost:9000")
+            .issuer(this.issuer)
             .authorizationEndpoint("/oauth2/fhir/authorize")
             .tokenEndpoint("/oauth2/fhir/token")
             .tokenIntrospectionEndpoint("/oauth2/fhir/introspect")
@@ -229,8 +214,7 @@ class SecurityConfig() {
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config =
             CorsConfiguration().apply {
-                allowedOriginPatterns =
-                    listOf("http://localhost:[*]", "http://127.0.0.1:[*]", "https://*.dev.nav.no")
+                allowedOriginPatterns = this.allowedOriginPatterns
                 allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 allowedHeaders = listOf("Authorization", "Content-Type", "X-Requested-With")
                 allowCredentials = true

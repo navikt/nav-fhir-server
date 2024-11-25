@@ -1,0 +1,14 @@
+# application-dev.yml
+logging:
+  level:
+    org.springframework.security: DEBUG
+    ca.uhn.fhir: DEBUG
+
+authorization:
+  issuer: "https://fhir.dev.ekstern.nav.no"
+  client:
+    redirect-uri: "https://syk-inn.ekstern.dev.nav.no/samarbeidspartner/sykmelding/fhir"
+
+cors:
+  allowed-origin-patterns:
+    - "https://*.dev.nav.no"
