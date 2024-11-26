@@ -1,13 +1,7 @@
 package no.nav.helse.navfhirserver.smart
 
 import ca.uhn.fhir.parser.IParser
-import org.hl7.fhir.r4.model.CapabilityStatement
-import org.hl7.fhir.r4.model.CodeType
-import org.hl7.fhir.r4.model.CodeableConcept
-import org.hl7.fhir.r4.model.DecimalType
-import org.hl7.fhir.r4.model.Enumerations
-import org.hl7.fhir.r4.model.UriType
-import org.hl7.fhir.r4.model.UrlType
+import org.hl7.fhir.r4.model.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
