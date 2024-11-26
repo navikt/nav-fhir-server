@@ -44,6 +44,7 @@ class EpjController {
                 clientId = "NAV_SMART_on_FHIR_example",
                 url = "https://nav-on-fhir.ekstern.dev.nav.no",
             ),
+            App(name = "Localhost Dev", clientId = "localhost", url = "http://localhost:3000/fhir"),
         )
 
     @GetMapping
@@ -76,8 +77,13 @@ class EpjController {
         val appToLaunch =
             apps.find { it.clientId == app } ?: throw IllegalArgumentException("Unknown app: $app")
 
-        // TODO: code
-        val launchUrl = "${appToLaunch.url}/launch?iss=https://fhir.ekstern.dev.nav.no&code=foo-bar-baz"
+        val launchUrl =
+            if (app == "localhost") {
+                "${appToLaunch.url}/launch?iss=http://localhost:9000&launch=foo-bar-baz"
+            } else {
+                // TODO: code
+                "${appToLaunch.url}/launch?iss=https://fhir.ekstern.dev.nav.no&launch=foo-bar-baz"
+            }
 
         model["url"] = launchUrl
         model["name"] = appToLaunch.name
