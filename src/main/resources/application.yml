@@ -17,6 +17,8 @@ management:
       base-path: /internal/actuator
 
 spring:
+  profiles:
+    default: local
   main:
     banner-mode: off
   application:

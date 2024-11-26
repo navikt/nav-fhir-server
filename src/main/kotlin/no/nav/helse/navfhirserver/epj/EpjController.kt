@@ -75,10 +75,9 @@ class EpjController {
 
         val appToLaunch =
             apps.find { it.clientId == app } ?: throw IllegalArgumentException("Unknown app: $app")
-        // TODO: Don't hardcode iss and code
-        // val launchUrl =
-        // "${appToLaunch.url}/launch?iss=https://www.fhir.dev.nav.no&code=foo-bar-baz"
-        val launchUrl = "${appToLaunch.url}/launch"
+
+        // TODO: code
+        val launchUrl = "${appToLaunch.url}/launch?iss=https://fhir.ekstern.dev.nav.no&code=foo-bar-baz"
 
         model["url"] = launchUrl
         model["name"] = appToLaunch.name
