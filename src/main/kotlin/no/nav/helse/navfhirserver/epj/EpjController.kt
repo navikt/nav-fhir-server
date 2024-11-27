@@ -1,5 +1,6 @@
 package no.nav.helse.navfhirserver.epj
 
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
@@ -26,7 +27,7 @@ class FakeLoginController {
 
 @Controller
 @RequestMapping("/epj")
-class EpjController {
+class EpjController(val userState: EpjUserState) {
 
     private data class User(val name: String, val hpr: String)
 
@@ -45,6 +46,11 @@ class EpjController {
                 url = "https://nav-on-fhir.ekstern.dev.nav.no",
             ),
             App(name = "Localhost Dev", clientId = "localhost", url = "http://localhost:3000/fhir"),
+            App(
+                name = "MSIS-melding",
+                clientId = "msis",
+                url = "https://test-klinikermelding-epj-web.azurewebsites.net",
+            ),
         )
 
     @GetMapping
@@ -55,7 +61,17 @@ class EpjController {
     }
 
     @GetMapping("/partials/patient-picker")
-    fun patientPicker(model: Model): String {
+    fun patientPicker(request: HttpServletRequest, model: Model): String {
+        if (userState.get(request.session.id) != null) {
+            model["fnr"] = userState.get(request.session.id)
+            model["name"] =
+                patients.find { it.fnr == userState.get(request.session.id) }?.name
+                    ?: throw IllegalArgumentException(
+                        "Unknown patient: ${userState.get(request.session.id)}"
+                    )
+            return "partials/consultation/start"
+        }
+
         model["patients"] = patients
 
         return "partials/patient-picker"
@@ -94,10 +110,17 @@ class EpjController {
 
 @Controller
 @RequestMapping("/epj/consultation")
-class ConsultationController {
+class ConsultationController(val userState: EpjUserState) {
 
     @PostMapping("/start")
-    fun startConsultation(@RequestParam fnr: String, model: Model): String {
+    fun startConsultation(
+        @RequestParam fnr: String,
+        request: HttpServletRequest,
+        model: Model,
+    ): String {
+        println("Starting consultation for $fnr (${request.session.id})")
+        userState.save(request.session.id, fnr)
+
         model["fnr"] = fnr
         model["name"] =
             patients.find { it.fnr == fnr }?.name
@@ -108,7 +131,10 @@ class ConsultationController {
     }
 
     @PostMapping("/end")
-    fun endConsultation(model: Model): String {
+    fun endConsultation(request: HttpServletRequest, model: Model): String {
+        println("Ending consultation")
+        userState.unset(request.session.id)
+
         // TODO clear server context about the consultation
         return "partials/consultation/end"
     }
