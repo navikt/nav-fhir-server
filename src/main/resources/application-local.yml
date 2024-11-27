@@ -1,3 +1,8 @@
+logging:
+  level:
+    org.springframework.security: TRACE
+    ca.uhn.fhir: TRACE
+
 server:
   baseUri: "http://localhost:9000"
 

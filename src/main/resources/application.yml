@@ -2,11 +2,6 @@
 server:
   port: 9000
 
-logging:
-  level:
-    org.springframework.security: TRACE
-    ca.uhn.fhir: TRACE
-
 # nais does not expose /internal endpoints on any public ingress, we
 # put actuator endpoints under /internal so nais can use them during startup and aliveness checks
 #
