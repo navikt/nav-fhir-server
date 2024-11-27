@@ -35,7 +35,7 @@ sequenceDiagram
     participant HID as HelseID
     actor PAT as Patient (Dolly data)
     
-    opt predondition 
+    opt precondition 
         NAV ->> EHR: Register client
         EHR -->> AUTH: Client registered
     end
