@@ -70,9 +70,9 @@ sequenceDiagram
     AUTH -->> EHR: Get practitioner, patient, encounter FHIR from session context
     EHR -->> AUTH: Practitioner FHIR ID
     AUTH -->> AUTH: id_token.fhirUser
-    EHR -->> AUTH: Patient ID
+    EHR -->> AUTH: Patient FHIR ID
     AUTH -->> AUTH: tokenResponse.patient
-    EHR -->> AUTH: Encounter ID
+    EHR -->> AUTH: Encounter FHIR ID
     AUTH -->> AUTH: tokenResponse.encounter
     AUTH -->> NAV: Access token response
     Note right of FHIR: id_token, access_token<br>refresh_token, launch context
