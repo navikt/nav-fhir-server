@@ -49,31 +49,31 @@ sequenceDiagram
     AUTH -->> EHR:  Authorization granted
     EHR -->> FHIR:  Get user data (FHIR)
     PAT -->> DOC: Comes in for appointment
-    DOC ->> EHR: Select patient, create encounter
     Note right of DOC: Search PID, select patient<br>create consultation<br>create diagnosis
+    DOC ->> EHR: Select patient, create encounter
     EHR ->> FHIR: Create encounter
     EHR ->> FHIR: Get patient data
     FHIR -->> EHR: Encounter and Patient data (FHIR)
     DOC ->> EHR: Launch SoF app
-    EHR ->> NAV: Launch request
     Note right of FHIR: ?iss=https://fhir.ekstern.dev.nav.no<br>&launch=xyz123
-    NAV ->> FHIR: Discovery request
+    EHR ->> NAV: Launch request
     Note right of FHIR: https://fhir.ekstern.dev.nav.no/<br>.well-known/smart-configuration
+    NAV ->> FHIR: Discovery request
     FHIR -->> NAV: Discovery response
-    NAV ->> AUTH: Authorization request
     note left of NAV: scope: openid profile fhirUser<br>patient/*.urs encounter/*.urs user/*.r<br>offline_access
+    NAV ->> AUTH: Authorization request
     opt
         AUTH -->> AUTH: EHR incorporates user input<br>into authorization decision (OAuth)
     end
     AUTH -->> NAV: Authorization granted
     NAV ->> AUTH: Access token request
     AUTH -->> EHR: Get practitioner, patient, encounter FHIR from session context
-    EHR -->> AUTH: practitioner ID --> id_token.fhirUser claim
-    Note left of AUTH: user/*.read
-    EHR -->> AUTH: patient ID --> tokenResponse.patient
-    Note left of AUTH: patient/*.update<br>patient/*.read<br>patient/*.search<br>
-    EHR -->> AUTH: encounter ID --> tokenResponse.encounter
-    Note left of AUTH: encounter/*.update<br>encounter/*.read<br>encounter/*.search<br>
+    EHR -->> AUTH: Practitioner FHIR ID
+    AUTH -->> AUTH: id_token.fhirUser
+    EHR -->> AUTH: Patient ID
+    AUTH -->> AUTH: tokenResponse.patient
+    EHR -->> AUTH: Encounter ID
+    AUTH -->> AUTH: tokenResponse.encounter
     AUTH -->> NAV: Access token response
     Note right of FHIR: id_token, access_token<br>refresh_token, launch context
     NAV ->> FHIR: Request Resources
