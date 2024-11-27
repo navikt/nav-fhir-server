@@ -3,3 +3,55 @@ server:
 
 client:
   redirect-uri: "https://syk-inn.ekstern.dev.nav.no/samarbeidspartner/sykmelding/fhir"
+
+smart:
+  configuration:
+    issuer: "https://fhir.ekstern.dev.nav.no"
+    jwks_uri: "https://fhir.ekstern.dev.nav.no/.well-known/jwks"
+    authorization_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/authorize"
+    token_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/token"
+    introspection_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/introspect"
+    management_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/user/manage"
+    revocation_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/user/revoke"
+    user_access_brand_bundle: ""
+    user_access_brand_identifier: ""
+    grant_types_supported:
+      - "authorization_code"
+      - "client_credentials"
+      - "refresh_token"
+    scopes_supported:
+      - "openid"
+      - "profile"
+      - "fhirUser"
+      - "launch"
+      - "patient/*.cruds"
+      - "patient/*.*"
+      - "encounter/*.cruds"
+      - "encounter/*.*"
+      - "user/*.cruds"
+      - "user/*.*"
+      - "offline_access"
+    response_types_supported:
+      - "code"
+      - "token"
+    capabilities:
+      - "launch-ehr"
+      - "launch-standalone"
+      - "client-public"
+      - "client-confidential-symmetric"
+      - "client-confidential-asymmetric"
+      - "sso-openid-connect"
+      - "context-passthrough-banner"
+      - "context-passthrough-style"
+      - "context-ehr-patient"
+      - "context-ehr-encounter"
+      - "context-standalone-patient"
+      - "context-standalone-encounter"
+      - "permission-offline"
+      - "permission-patient"
+      - "permission-user"
+      - "permission-v1"
+      - "permission-v2"
+      - "authorize-post"
+    code_challenge_methods_supported:
+      - "S256"

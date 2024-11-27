@@ -1,67 +1,156 @@
 package no.nav.helse.navfhirserver.smart
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.ResponseEntity
+import ca.uhn.fhir.parser.IParser
+import org.hl7.fhir.r4.model.*
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.*
 
 @RestController
-class SmartConfigurationController(@Value("\${server.baseUri}") private val baseUri: String) {
+class SmartConfigurationController(
+    private val fhirJsonParser: IParser,
+    private val smartConfig: SmartConfigurationProperties
+) {
 
     @GetMapping("/.well-known/smart-configuration", produces = ["application/json"])
-    fun getSmartConfiguration(): ResponseEntity<SmartConfiguration> {
-        val config =
-            SmartConfiguration(
-                issuer = baseUri,
-                jwksUri = "$baseUri/oauth2/fhir/jwks",
-                authorizationEndpoint = "$baseUri/oauth2/fhir/authorize",
-                tokenEndpoint = "$baseUri/oauth2/fhir/token",
-                managementEndpoint = "$baseUri/oauth2/fhir/manage",
-                introspectionEndpoint = "$baseUri/oauth2/fhir/introspect",
-                revocationEndpoint = "$baseUri/oauth2/fhir/revoke",
-                userAccessBrandBundle = "$baseUri/oauth2/fhir/bundle",
-                userAccessBrandIdentifier = "$baseUri/oauth2/fhir/identifier",
-                grantTypesSupported =
-                    listOf("authorization_code", "client_credentials", "refresh_token"),
-                scopesSupported =
-                    listOf(
-                        "openid",
-                        "profile",
-                        "fhirUser",
-                        "launch",
-                        "patient/*.cruds",
-                        "patient/*.*",
-                        "encounter/*.cruds",
-                        "encounter/*.*",
-                        "user/*.cruds",
-                        "user/*.*",
-                        "offline_access",
-                    ),
-                responseTypesSupported = listOf("code", "token"),
-                capabilities =
-                    listOf(
-                        "launch-ehr",
-                        "launch-standalone",
-                        "client-public",
-                        "client-confidential-symmetric",
-                        "client-confidential-asymmetric",
-                        "sso-openid-connect",
-                        "context-passthrough-banner",
-                        "context-passthrough-style",
-                        "context-ehr-patient",
-                        "context-ehr-encounter",
-                        "context-standalone-patient",
-                        "context-standalone-encounter",
-                        "permission-offline",
-                        "permission-patient",
-                        "permission-user",
-                        "permission-v1",
-                        "permission-v2",
-                        "authorize-post",
-                    ),
-                codeChallengeMethodsSupported = listOf("256"),
+    fun getSmartConfiguration(): Map<String, Any> {
+        return mapOf(
+            "issuer" to smartConfig.issuer,
+            "jwks_uri" to smartConfig.jwksUri,
+            "authorization_endpoint" to smartConfig.authorizationEndpoint,
+            "token_endpoint" to smartConfig.tokenEndpoint,
+            "management_endpoint" to smartConfig.managementEndpoint,
+            "introspection_endpoint" to smartConfig.introspectionEndpoint,
+            "revocation_endpoint" to smartConfig.revocationEndpoint,
+            "user_access_brand_bundle" to smartConfig.userAccessBrandBundle,
+            "user_access_brand_identifier" to smartConfig.userAccessBrandIdentifier,
+            "grant_types_supported" to smartConfig.grantTypesSupported,
+            "scopes_supported" to smartConfig.scopesSupported,
+            "response_types_supported" to smartConfig.responseTypesSupported,
+            "capabilities" to smartConfig.capabilities,
+            "code_challenge_methods_supported" to smartConfig.codeChallengeMethodsSupported
+        )
+    }
+
+    @GetMapping("/metadata", produces = ["application/json"])
+    fun getCapabilities(): String {
+        val capabilityStatement = CapabilityStatement().apply {
+            // Server metadata
+            status = Enumerations.PublicationStatus.ACTIVE
+            date = Date()
+            publisher = "NAV IT"
+            kind = CapabilityStatement.CapabilityStatementKind.INSTANCE
+            software = CapabilityStatement.CapabilityStatementSoftwareComponent().apply {
+                name = "NAV FHIR server"
+                version = "1"
+            }
+
+            // FHIR version and supported formats
+            fhirVersion = Enumerations.FHIRVersion._4_0_1
+            format = listOf(
+                CodeType("application/fhir+json"),
+                CodeType("application/json")
             )
 
-        return ResponseEntity.ok(config)
+            // REST configuration
+            addRest().apply {
+                mode = CapabilityStatement.RestfulCapabilityMode.SERVER
+
+                // Security configuration
+                security = CapabilityStatement.CapabilityStatementRestSecurityComponent().apply {
+                    cors = true
+                    addExtension().apply {
+                        url = "http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris"
+                        extension = listOf(
+                            addExtension().apply {
+                                url = "authorize"
+                                value = UriType(smartConfig.authorizationEndpoint)
+                            },
+                            addExtension().apply {
+                                url = "token"
+                                value = UriType(smartConfig.tokenEndpoint)
+                            },
+                            addExtension().apply {
+                                url = "introspect"
+                                value = UriType(smartConfig.introspectionEndpoint)
+                            }
+                        )
+                    }
+                    service.add(
+                        CodeableConcept().apply {
+                            addCoding().apply {
+                                system = "http://hl7.org/fhir/restful-security-service"
+                                code = "SMART-on-FHIR"
+                                display = "SMART-on-FHIR"
+                            }
+                        }
+                    )
+                    description = "Authentication via OAuth2 using SMART on FHIR framework (see http://docs.smarthealthit.org)"
+                }
+
+                // Supported resources
+                addResource().apply {
+                    type = "Patient"
+                    profile = "http://hl7.no/fhir/StructureDefinition/no-basis-Patient"
+
+                    // Supported interactions
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.READ
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.SEARCHTYPE
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.CREATE
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.UPDATE
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.DELETE
+                    }
+                }
+
+                addResource().apply {
+                    type = "Practitioner"
+                    profile = "http://hl7.no/fhir/StructureDefinition/no-basis-Practitioner"
+
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.READ
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.SEARCHTYPE
+                    }
+                }
+
+                addResource().apply {
+                    type = "Encounter"
+                    profile = "http://hl7.no/fhir/StructureDefinition/no-basis-Encounter"
+
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.READ
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.SEARCHTYPE
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.CREATE
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.UPDATE
+                    }
+                    addInteraction().apply {
+                        code = CapabilityStatement.TypeRestfulInteraction.DELETE
+                    }
+                }
+
+                addOperation().apply {
+                    name = "metadata"
+                    definition = "CapabilityStatement"
+                }
+            }
+        }
+
+        return fhirJsonParser.encodeResourceToString(capabilityStatement)
     }
 }
