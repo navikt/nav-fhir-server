@@ -5,6 +5,11 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.interfaces.RSAPrivateKey
+import java.security.interfaces.RSAPublicKey
+import java.util.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -29,17 +34,12 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.interfaces.RSAPrivateKey
-import java.security.interfaces.RSAPublicKey
-import java.util.*
 
 @Configuration
 @EnableWebSecurity(debug = true)
 class SecurityConfig(
     @Value("\${server.baseUri}") private val baseUri: String,
-    @Value("\${client.redirect-uri}") private val clientRedirectUri: String
+    @Value("\${client.redirect-uri}") private val clientRedirectUri: String,
 ) {
 
     @Bean
@@ -187,17 +187,17 @@ class SecurityConfig(
     }
 
     @Bean
-    fun devAuthorizationServerSettings(): AuthorizationServerSettings {
+    fun authorizationServerSettings(): AuthorizationServerSettings {
         return AuthorizationServerSettings.builder()
             .issuer(baseUri)
-            .authorizationEndpoint("/oauth2/fhir/authorize")
-            .tokenEndpoint("/oauth2/fhir/token")
-            .tokenIntrospectionEndpoint("/oauth2/fhir/introspect")
-            .tokenRevocationEndpoint("/oauth2/fhir/revoke")
-            .jwkSetEndpoint("/oauth2/fhir/jwks")
-            .oidcLogoutEndpoint("/connect/fhir/logout")
-            .oidcUserInfoEndpoint("/connect/fhir/userinfo")
-            .oidcClientRegistrationEndpoint("/connect/fhir/register")
+            .authorizationEndpoint("/fhir/r4/oauth2/authorize")
+            .tokenEndpoint("/fhir/r4/oauth2/token")
+            .tokenIntrospectionEndpoint("/fhir/r4/oauth2/introspect")
+            .tokenRevocationEndpoint("/fhir/r4/oauth2/revoke")
+            .jwkSetEndpoint("/.well-known/jwks")
+            .oidcLogoutEndpoint("/fhir/r4/user/logout")
+            .oidcUserInfoEndpoint("/fhir/r4/user/userinfo")
+            .oidcClientRegistrationEndpoint("/fhir/r4/client/register")
             .build()
     }
 
