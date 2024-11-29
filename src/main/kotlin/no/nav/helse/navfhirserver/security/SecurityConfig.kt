@@ -49,6 +49,11 @@ class SecurityConfig(
         http.securityMatcher(authConfig.endpointsMatcher).with(authConfig) { authorizationServer ->
             authorizationServer.oidc(Customizer.withDefaults())
         }
+
+        http.headers { headers ->
+            headers.frameOptions { frameOptions -> frameOptions.sameOrigin() }
+        }
+
         return http.build()
     }
 
