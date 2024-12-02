@@ -35,7 +35,7 @@ sequenceDiagram
     participant HID as HelseID
     actor PAT as Patient (Dolly data)
     
-    opt precondition 
+    critical predondition 
         NAV ->> EHR: Register client
         EHR -->> AUTH: Client registered
     end
@@ -49,34 +49,36 @@ sequenceDiagram
     AUTH -->> EHR:  Authorization granted
     EHR -->> FHIR:  Get user data (FHIR)
     PAT -->> DOC: Comes in for appointment
-    Note right of DOC: Search PID, select patient<br>create consultation<br>create diagnosis
+    Note over DOC,EHR: Search PID, select patient<br>create consultation<br>create diagnosis
     DOC ->> EHR: Select patient, create encounter
     EHR ->> FHIR: Create encounter
     EHR ->> FHIR: Get patient data
     FHIR -->> EHR: Encounter and Patient data (FHIR)
     DOC ->> EHR: Launch SoF app
-    Note right of FHIR: ?iss=https://fhir.ekstern.dev.nav.no<br>&launch=xyz123
+    Note over EHR,NAV: ?iss=https://fhir.ekstern.dev.nav.no<br>&launch=xyz123
     EHR ->> NAV: Launch request
-    Note right of FHIR: https://fhir.ekstern.dev.nav.no/<br>.well-known/smart-configuration
+    Note over NAV,FHIR: https://fhir.ekstern.dev.nav.no/<br>.well-known/smart-configuration
     NAV ->> FHIR: Discovery request
     FHIR -->> NAV: Discovery response
-    note left of NAV: scope: openid profile fhirUser<br>patient/*.urs encounter/*.urs user/*.r<br>offline_access
+    Note over NAV,AUTH: scope: openid profile fhirUser<br>patient/*.urs encounter/*.urs user/*.r<br>offline_access
     NAV ->> AUTH: Authorization request
     opt
         AUTH -->> AUTH: EHR incorporates user input<br>into authorization decision (OAuth)
     end
     AUTH -->> NAV: Authorization granted
     NAV ->> AUTH: Access token request
-    AUTH -->> EHR: Get practitioner, patient, encounter FHIR from session context
-    EHR -->> AUTH: Practitioner FHIR ID
-    AUTH -->> AUTH: id_token.fhirUser
-    EHR -->> AUTH: Patient FHIR ID
-    AUTH -->> AUTH: tokenResponse.patient
-    EHR -->> AUTH: Encounter FHIR ID
-    AUTH -->> AUTH: tokenResponse.encounter
+    critical Validate and provide launch context
+        AUTH -->> EHR: Get practitioner, patient, encounter FHIR from session context
+        EHR -->> AUTH: Practitioner FHIR ID
+        AUTH -->> AUTH: id_token.fhirUser
+        EHR -->> AUTH: Patient ID
+        AUTH -->> AUTH: tokenResponse.patient
+        EHR -->> AUTH: Encounter ID
+        AUTH -->> AUTH: tokenResponse.encounter
+    end
     AUTH -->> NAV: Access token response
-    Note right of FHIR: id_token, access_token<br>refresh_token, launch context
+    Note over NAV,FHIR: id_token, access_token<br>refresh_token, launch context
     NAV ->> FHIR: Request Resources
-    Note left of NAV: /api/v1/fhir/[FhirResource]/[resource-id]
+    Note over FHIR,NAV: /api/v1/fhir/[FhirResource]/[resource-id]
     FHIR -->> NAV: FHIR Resource information
 ```

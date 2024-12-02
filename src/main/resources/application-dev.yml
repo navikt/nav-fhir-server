@@ -1,18 +1,23 @@
+# application-dev.yml
 logging:
   level:
     org.springframework.security: DEBUG
     ca.uhn.fhir: DEBUG
 
-server:
-  baseUri: "https://fhir.ekstern.dev.nav.no"
-
-client:
-  redirect-uri: "https://syk-inn.ekstern.dev.nav.no/samarbeidspartner/sykmelding/fhir"
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "https://fhir.ekstern.dev.nav.no"
+          audiences:
+            - "https://nav-on-fhir.ekstern.dev.nav.no"
+            - "https://syk-inn.ekstern.dev.nav.no/fhir"
 
 smart:
   configuration:
     issuer: "https://fhir.ekstern.dev.nav.no"
-    jwks_uri: "https://fhir.ekstern.dev.nav.no/.well-known/jwks"
+    jwks_uri: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/jwks"
     authorization_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/authorize"
     token_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/token"
     introspection_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/introspect"

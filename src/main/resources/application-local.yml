@@ -1,23 +1,28 @@
+# application-local.yml
 logging:
   level:
     org.springframework.security: TRACE
     ca.uhn.fhir: TRACE
 
-server:
-  baseUri: "http://localhost:9000"
-
-client:
-  redirect-uri: "http://localhost:5173/samarbeidspartner/sykmelding/fhir"
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:6969"
+          audiences:
+            - "http://localhost:3000"
+            - "http://localhost:5173"
 
 smart:
   configuration:
-    issuer: "http://localhost:9000"
-    jwks_uri: "http://localhost:9000/.well-known/jwks"
-    authorization_endpoint: "http://localhost:9000/fhir/r4/oauth2/authorize"
-    token_endpoint: "http://localhost:9000/fhir/r4/oauth2/token"
-    introspection_endpoint: "http://localhost:9000/fhir/r4/oauth2/introspect"
-    management_endpoint: "http://localhost:9000/fhir/r4/user/manage"
-    revocation_endpoint: "http://localhost:9000/fhir/r4/user/revoke"
+    issuer: "http://localhost:6969"
+    jwks_uri: "http://localhost:6969/oauth2/jwks"
+    authorization_endpoint: "http://localhost:6969/oauth2/authorize"
+    token_endpoint: "http://localhost:6969/oauth2/token"
+    introspection_endpoint: "http://localhost:6969/oauth2/introspect"
+    management_endpoint: "http://localhost:6969/oauth2/manage"
+    revocation_endpoint: "http://localhost:6969/oauth2/revoke"
     user_access_brand_bundle: ""
     user_access_brand_identifier: ""
     grant_types_supported:
@@ -59,4 +64,4 @@ smart:
       - "permission-v2"
       - "authorize-post"
     code_challenge_methods_supported:
-      - "S256"
+      - "RS256"

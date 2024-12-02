@@ -9,6 +9,8 @@ server:
 management:
   endpoints:
     web:
+      exposure:
+        include: "*"
       base-path: /internal/actuator
 
 spring:
