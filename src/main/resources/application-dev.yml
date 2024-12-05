@@ -9,20 +9,20 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "https://fhir.ekstern.dev.nav.no"
+          issuer-uri: "https://auth.fhir.ekstern.dev.nav.no"
           audiences:
-            - "https://nav-on-fhir.ekstern.dev.nav.no"
+            - "https://epj.ekstern.dev.nav.no"
             - "https://syk-inn.ekstern.dev.nav.no/fhir"
 
-smart:
+smart: # TODO must match https://github.com/navikt/nav-epj-auth-server well-knowns
   configuration:
-    issuer: "https://fhir.ekstern.dev.nav.no"
-    jwks_uri: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/jwks"
-    authorization_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/authorize"
-    token_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/token"
-    introspection_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/oauth2/introspect"
-    management_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/user/manage"
-    revocation_endpoint: "https://fhir.ekstern.dev.nav.no/fhir/r4/user/revoke"
+    issuer: "https://auth.fhir.ekstern.dev.nav.no"
+    jwks_uri: "https://auth.fhir.ekstern.dev.nav.no/oauth2/jwks"
+    authorization_endpoint: "https://auth.fhir.ekstern.dev.nav.no/oauth2/authorize"
+    token_endpoint: "https://auth.fhir.ekstern.dev.nav.no/oauth2/token"
+    introspection_endpoint: "https://auth.fhir.ekstern.dev.nav.no/oauth2/introspect"
+    management_endpoint: "https://auth.fhir.ekstern.dev.nav.no/user/manage"
+    revocation_endpoint: "https://auth.fhir.ekstern.dev.nav.no/user/revoke"
     user_access_brand_bundle: ""
     user_access_brand_identifier: ""
     grant_types_supported:

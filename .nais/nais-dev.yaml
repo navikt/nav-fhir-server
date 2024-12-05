@@ -12,10 +12,8 @@ spec:
     max: 2
     cpuThresholdPercentage: 90
   port: 9000
-  accessPolicy:
-    inbound:
-      rules:
-        - application: nav-fhir-server-wonderwall
+  ingresses:
+    - "https://fhir.ekstern.dev.no"
   liveness:
     path: /internal/actuator/health
   readiness:

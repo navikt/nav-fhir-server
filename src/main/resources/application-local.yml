@@ -9,20 +9,20 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "http://localhost:6969"
+          issuer-uri: "http://localhost:8080"
           audiences:
             - "http://localhost:3000"
             - "http://localhost:5173"
 
-smart:
+smart: # TODO must match https://github.com/navikt/nav-epj-auth-server well-knowns
   configuration:
-    issuer: "http://localhost:6969"
-    jwks_uri: "http://localhost:6969/oauth2/jwks"
-    authorization_endpoint: "http://localhost:6969/oauth2/authorize"
-    token_endpoint: "http://localhost:6969/oauth2/token"
-    introspection_endpoint: "http://localhost:6969/oauth2/introspect"
-    management_endpoint: "http://localhost:6969/oauth2/manage"
-    revocation_endpoint: "http://localhost:6969/oauth2/revoke"
+    issuer: "http://localhost:8080"
+    jwks_uri: "http://localhost:8080/oauth2/jwks"
+    authorization_endpoint: "http://localhost:8080/oauth2/authorize"
+    token_endpoint: "http://localhost:8080/oauth2/token"
+    introspection_endpoint: "http://localhost:8080/oauth2/introspect"
+    management_endpoint: "http://localhost:8080/oauth2/manage"
+    revocation_endpoint: "http://localhost:8080/oauth2/revoke"
     user_access_brand_bundle: ""
     user_access_brand_identifier: ""
     grant_types_supported:
