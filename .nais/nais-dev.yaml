@@ -21,6 +21,10 @@ spec:
   startup:
     path: /internal/actuator/health
     initialDelay: 30
+  accessPolicy:
+    inbound:
+      rules:
+        - application: nav-epj
   observability:
     autoInstrumentation:
       enabled: true
