@@ -90,10 +90,6 @@ class SecurityConfig() {
                 // Not accessible on public ingress anyway
                 authorize("/internal/**", permitAll)
 
-                // Fake EPJ (should be secured by wonderwall)
-                authorize("/", permitAll) // TODO secure
-                authorize("/epj/**", permitAll) // TODO secure
-
                 // General
                 authorize("/.well-known/**", permitAll)
                 authorize("/metadata", permitAll)
