@@ -2,6 +2,7 @@ package no.nav.helse.navfhirserver.smart
 
 import ca.uhn.fhir.parser.IParser
 import org.hl7.fhir.r4.model.*
+import org.hl7.fhir.r4.model.CapabilityStatement.*
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
@@ -39,8 +40,8 @@ class SmartConfigurationController(
             status = Enumerations.PublicationStatus.ACTIVE
             date = Date()
             publisher = "NAV IT"
-            kind = CapabilityStatement.CapabilityStatementKind.INSTANCE
-            software = CapabilityStatement.CapabilityStatementSoftwareComponent().apply {
+            kind = CapabilityStatementKind.INSTANCE
+            software = CapabilityStatementSoftwareComponent().apply {
                 name = "NAV FHIR server"
                 version = "1"
             }
@@ -54,10 +55,10 @@ class SmartConfigurationController(
 
             // REST configuration
             addRest().apply {
-                mode = CapabilityStatement.RestfulCapabilityMode.SERVER
+                mode = RestfulCapabilityMode.SERVER
 
                 // Security configuration
-                security = CapabilityStatement.CapabilityStatementRestSecurityComponent().apply {
+                security = CapabilityStatementRestSecurityComponent().apply {
                     cors = true
                     addExtension().apply {
                         url = "http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris"
@@ -95,19 +96,19 @@ class SmartConfigurationController(
 
                     // Supported interactions
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.READ
+                        code = TypeRestfulInteraction.READ
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.SEARCHTYPE
+                        code = TypeRestfulInteraction.SEARCHTYPE
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.CREATE
+                        code = TypeRestfulInteraction.CREATE
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.UPDATE
+                        code = TypeRestfulInteraction.UPDATE
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.DELETE
+                        code = TypeRestfulInteraction.DELETE
                     }
                 }
 
@@ -116,10 +117,10 @@ class SmartConfigurationController(
                     profile = "http://hl7.no/fhir/StructureDefinition/no-basis-Practitioner"
 
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.READ
+                        code = TypeRestfulInteraction.READ
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.SEARCHTYPE
+                        code = TypeRestfulInteraction.SEARCHTYPE
                     }
                 }
 
@@ -128,19 +129,19 @@ class SmartConfigurationController(
                     profile = "http://hl7.no/fhir/StructureDefinition/no-basis-Encounter"
 
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.READ
+                        code = TypeRestfulInteraction.READ
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.SEARCHTYPE
+                        code = TypeRestfulInteraction.SEARCHTYPE
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.CREATE
+                        code = TypeRestfulInteraction.CREATE
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.UPDATE
+                        code = TypeRestfulInteraction.UPDATE
                     }
                     addInteraction().apply {
-                        code = CapabilityStatement.TypeRestfulInteraction.DELETE
+                        code = TypeRestfulInteraction.DELETE
                     }
                 }
 

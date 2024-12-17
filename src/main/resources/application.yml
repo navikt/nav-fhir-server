@@ -27,3 +27,5 @@ spring:
       allow-numeric-leading-zeros: true
     deserialization:
       fail-on-unknown-properties: false
+
+cluster: ${Cluster.current}
