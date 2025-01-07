@@ -15,7 +15,7 @@ spring:
             - "https://syk-inn.ekstern.dev.nav.no/fhir"
 
 smart: # TODO must match https://github.com/navikt/nav-epj-auth-server well-knowns
-  configuration:
+  configuration: 
     issuer: "https://auth-fhir.ekstern.dev.nav.no"
     jwks_uri: "https://auth-fhir.ekstern.dev.nav.no/oauth2/jwks"
     authorization_endpoint: "https://auth-fhir.ekstern.dev.nav.no/oauth2/authorize"
