@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 @ConfigurationPropertiesScan("no.nav.helse.navfhirserver")
 @SpringBootApplication
 @EnableWebSecurity(debug = true)
-class NavFhirServerApplication
+open class NavFhirServerApplication
 
 fun main(args: Array<String>) {
     runApplication<NavFhirServerApplication>(*args)  {
