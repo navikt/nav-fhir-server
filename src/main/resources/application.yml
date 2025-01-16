@@ -1,6 +1,6 @@
 # application.yml
 server:
-  port: 9000
+  port: 9001
 
 # nais does not expose /internal endpoints on any public ingress, we
 # put actuator endpoints under /internal so nais can use them during startup and aliveness checks
