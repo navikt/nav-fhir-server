@@ -65,15 +65,15 @@ class SmartConfigurationController(
                         extension = listOf(
                             addExtension().apply {
                                 url = "authorize"
-                                value = UriType(smartConfig.authorizationEndpoint)
+                                setValue(UriType(smartConfig.authorizationEndpoint))
                             },
                             addExtension().apply {
                                 url = "token"
-                                value = UriType(smartConfig.tokenEndpoint)
+                                setValue(UriType(smartConfig.tokenEndpoint))
                             },
                             addExtension().apply {
                                 url = "introspect"
-                                value = UriType(smartConfig.introspectionEndpoint)
+                                setValue(UriType(smartConfig.introspectionEndpoint))
                             }
                         )
                     }
