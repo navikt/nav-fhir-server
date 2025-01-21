@@ -7,7 +7,7 @@ COPY build/libs/*.jar app.jar
 ENV TZ="Europe/Oslo"
 ENV JAVA_OPTS="-Dlogback.configurationFile=logback.xml"
 
-EXPOSE 8080
+EXPOSE 9001
 
 USER nonroot
 

@@ -11,7 +11,7 @@ spec:
     min: 1
     max: 2
     cpuThresholdPercentage: 90
-  port: 9000
+  port: 9001
   ingresses:
     - "https://fhir.ekstern.dev.nav.no/"
   liveness:
