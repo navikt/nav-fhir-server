@@ -25,6 +25,9 @@ spec:
     inbound:
       rules:
         - application: nav-epj
+    outbound:
+      rules:
+        - application: nav-epj-auth-server
   observability:
     autoInstrumentation:
       enabled: true
